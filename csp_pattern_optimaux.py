@@ -33,11 +33,11 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [150, 100, 160, 140, 83]
-LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 140, 56], [30, 45, 50, 43, 67, 83]]
+LONGUEUR_BOBINE_PERE = [4, 6]
+LISTE_BOBINE_VOULUE = [[60, 70], [2, 4]]
 
 TAILLE_LISTE_DECOUPEE = 0
-ITERATION_MINIMISATION_PERTES = 10000
+ITERATION_MINIMISATION_PERTES = 10
 
 
 #   FONCTIONS
@@ -63,11 +63,6 @@ def combinaisons(liste_pere, liste_fils):
                 if sum(comb) == pere:
                     patterns_pere.append(comb)
         tous_patterns.append(patterns_pere)
-
-    combinaisons_tous_patterns = []
-    for patterns in tous_patterns:
-        combinaisons_tous_patterns.append(list(permutations(patterns)))
-
     return tous_patterns
 
 
@@ -135,7 +130,6 @@ def perte_minimale(pattern, liste):
         pertes += i[-1][1]*i[-1][2]
         total += i[-1][0]*i[-1][2]
     coeff_pertes = 100 - abs(pertes - total) / total * 100
-    print(total, pertes, pattern_final)
     affichage.affichage(pattern_final, coeff_pertes)
 
 
