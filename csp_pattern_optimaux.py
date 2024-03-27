@@ -2,6 +2,7 @@ from collections import Counter
 from copy import deepcopy
 from itertools import combinations_with_replacement, permutations
 import csp_random
+import affichage
 
 ####################################################################################################
 #                                                                                                  #
@@ -23,8 +24,16 @@ import csp_random
 #   LONGUEUR_BOBINE_PERE : liste des longueurs des bobines pères
 #   LISTE_BOBINE_VOULUE : liste des longueurs des bobines fils
 
+# single mode
 LONGUEUR_BOBINE_PERE = [180, 100]
 LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
+
+# multi mode
+# LONGUEUR_BOBINE_PERE = [150, 100]
+# LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
+
+TAILLE_LISTE_DECOUPEE = 0
+ITERATION_MINIMISATION_PERTES = 3000
 
 
 #   FONCTIONS
@@ -54,7 +63,6 @@ def combinaisons(liste_pere, liste_fils):
     combinaisons_tous_patterns = []
     for patterns in tous_patterns:
         combinaisons_tous_patterns.append(list(permutations(patterns)))
-    print(tous_patterns, '\n', combinaisons_tous_patterns, '\n')
 
     return tous_patterns
 
@@ -92,13 +100,6 @@ def perte_nulle():
     if len(liste[0]) == 0:
         liste = None
 
-    print('Patterns qui ne font pas perdre de matière première :')
-    for i in pattern_perte_nulle:
-        print('Pattern:', i[0], '| Nombre de répétitions:',
-              i[1], '| Longueur de la bobine père:', i[2])
-    print('\nListe des bobines restantes à calculer:')
-    print(liste)
-
     return pattern_perte_nulle, liste
 
 
@@ -111,9 +112,27 @@ def perte_minimale(pattern, liste):
     sortie :
         pattern_final : pattern final de la forme [[pattern, nombre de répétitions, longueur de la bobine père], ...]
     """
-    pattern_final = pattern
+    pattern_final = []
 
-    return pattern_final
+    mise_en_forme = []
+    for listes in pattern:
+        mise_en_forme.extend(bobine for bobine in listes[0])
+        mise_en_forme.append([listes[-1], 0, listes[-2]])
+        pattern_final.append(mise_en_forme)
+        mise_en_forme = []
+
+    pattern_random, pertes = csp_random.func_csp_random(LONGUEUR_BOBINE_PERE, liste,
+                                                        TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, False)
+    pattern_final.extend(pattern_random)
+
+    pertes = 0
+    total = 0
+    for i in pattern_final:
+        pertes += i[-1][1]
+        total += i[-1][0]*i[-1][2]
+    coeff_pertes = 100 - abs(pertes - total) / total * 100
+
+    affichage.affichage(pattern_final, coeff_pertes)
 
 
 # PROGRAMME PRINCIPAL

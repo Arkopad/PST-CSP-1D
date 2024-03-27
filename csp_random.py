@@ -11,16 +11,21 @@ import affichage
 # decoupage de la liste de bobine en sous listes de longeueur TAILLE_LISTE_DECOUPEE  (0 pour aucun découpage)
 TAILLE_LISTE_DECOUPEE = 0
 # nombre d'itération pour minimiser les pertes c'est à dire le nombre de fois que la boucle va aleatoirement essayer de minimiser les pertes
-ITERATION_MINIMISATION_PERTES = 300
+ITERATION_MINIMISATION_PERTES = 5000
 
-# longueur des bobines initiales en stock et qui vont être découpées
+
+# single mode
+# longueur_bobine_pere = [180, 100]
+# liste_bobine_voulu = [[800, 500, 100], [30, 45, 50]]
+
+# multi mode
 longueur_bobine_pere = [150, 100]
-# [[nombre], [taille]] ; nombres de bobines que l'on veut obtenir et leur longueur
 liste_bobine_voulu = [[600, 700, 500], [30, 45, 50]]
+
 affichage_graphique = True
 
 
-def csp_random(longueur_bobine_pere, liste_bobine_voulu, TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, affichage_graphique):
+def func_csp_random(longueur_bobine_pere, liste_bobine_voulu, TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, affichage_graphique):
 
     total_nombre_bobine_voulue = sum(liste_bobine_voulu[0])
 
@@ -158,6 +163,9 @@ def csp_random(longueur_bobine_pere, liste_bobine_voulu, TAILLE_LISTE_DECOUPEE, 
     if affichage_graphique:
         affichage.affichage(pattern_finaux, pertes)
 
+    return pattern_finaux, pertes
 
-csp_random(longueur_bobine_pere, liste_bobine_voulu,
-           TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, affichage)
+
+if __name__ == "__main__":
+    func_csp_random(longueur_bobine_pere, liste_bobine_voulu,
+                    TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, affichage)
