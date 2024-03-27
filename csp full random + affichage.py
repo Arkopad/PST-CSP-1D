@@ -3,8 +3,7 @@ from tqdm import tqdm
 import math as m
 import copy
 from collections import Counter
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+import affichage
 
 ### single mode ###
 
@@ -156,46 +155,4 @@ for item, count in counts.items():
 
 print(pattern_finaux, '\npertes = ', round(pertes, 4), '%')
 
-
-plt.close('all')
-fig, ax = plt.subplots()
-colors = ['red', 'blue', 'green', 'yellow',
-          'purple', 'orange', 'pink', 'brown']
-pattern_finaux.sort(key=lambda x: x[-1][0], reverse=True)
-nombre_patterns = len(pattern_finaux)
-longueur_bobine_max = max([pattern[-1][0] for pattern in pattern_finaux])
-
-
-for i in range(nombre_patterns):
-    longueur = 0
-    for j, bobine in enumerate(pattern_finaux[i]):
-        if type(bobine) == list and bobine[1] != 0:
-            bobine = bobine[1]
-            rectangle = patches.Rectangle(
-                (longueur, i*15), bobine, 10, edgecolor='white', facecolor='black', linewidth=1.5)
-            ax.add_patch(rectangle)
-            plt.text(longueur + bobine / 2, i*15 + 5, bobine,
-                     ha='center', va='center', color='white')
-            longueur = bobine + longueur
-
-        elif type(bobine) == int:
-            color_index = j % len(colors)
-            rectangle = patches.Rectangle(
-                (longueur, i*15), bobine, 10, edgecolor='white', facecolor=colors[color_index], linewidth=1.5)
-            ax.add_patch(rectangle)
-            plt.text(longueur + bobine / 2, i*15 + 5,
-                     bobine, ha='center', va='center')
-            longueur = bobine + longueur
-    plt.text(-5, i*15 + 5,
-             f'{pattern_finaux[i][-1][0]}', ha='center', va='center', color='black')
-    plt.text(longueur + 5, i*15 + 5,
-             f'x{pattern_finaux[i][-1][2]}', ha='center', va='center', color='black')
-
-
-plt.gca().axes.get_yaxis().set_visible(False)
-plt.xticks(range(0, longueur_bobine_max + 1, longueur_bobine_max))
-plt.ylim(0, nombre_patterns*15 - 5)
-plt.xlim(0, longueur_bobine_max)
-plt.title('Pertes = ' + str(round(pertes, 4)) + '%')
-
-plt.show()
+affichage.affichage(pattern_finaux)
