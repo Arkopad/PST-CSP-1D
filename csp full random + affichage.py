@@ -153,6 +153,4 @@ for item, count in counts.items():
     test[-1].append(count)
     pattern_finaux.append(test)
 
-print(pattern_finaux, '\npertes = ', round(pertes, 4), '%')
-
 affichage.affichage(pattern_finaux)
