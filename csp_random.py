@@ -11,7 +11,7 @@ import affichage
 # decoupage de la liste de bobine en sous listes de longeueur TAILLE_LISTE_DECOUPEE  (0 pour aucun découpage)
 TAILLE_LISTE_DECOUPEE = 0
 # nombre d'itération pour minimiser les pertes c'est à dire le nombre de fois que la boucle va aleatoirement essayer de minimiser les pertes
-ITERATION_MINIMISATION_PERTES = 15000
+ITERATION_MINIMISATION_PERTES = 10000
 
 
 # single mode
