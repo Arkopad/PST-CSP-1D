@@ -3,6 +3,7 @@ from copy import deepcopy
 from itertools import combinations_with_replacement, permutations
 import csp_random
 import affichage
+from tqdm import tqdm
 
 ####################################################################################################
 #                                                                                                  #
@@ -33,8 +34,8 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [100, 150, 80]
-LISTE_BOBINE_VOULUE = [[600, 700, 500, 400], [2, 4, 8, 3]]
+LONGUEUR_BOBINE_PERE = [1000, 1500]
+LISTE_BOBINE_VOULUE = [[600, 700, 500, 400], [20, 40, 80, 30]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10
@@ -56,7 +57,7 @@ def combinaisons(liste_pere, liste_fils):
         tous_patterns : liste des combinaisons possibles pour chaque bobine père de la forme [[combinaison1, combinaison2, ...], [combinaison1, combinaison2, ...], ...]
     """
     tous_patterns = []
-    for pere in liste_pere:
+    for pere in tqdm(liste_pere):
         patterns_pere = []
         for r in range(1, pere // min(liste_fils) + 1):
             for comb in combinations_with_replacement(liste_fils, r):
@@ -81,7 +82,7 @@ def perte_nulle():
     tous_patterns = combinaisons(
         LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
 
-    for pere, patterns in zip(LONGUEUR_BOBINE_PERE, tous_patterns):
+    for pere, patterns in tqdm(zip(LONGUEUR_BOBINE_PERE, tous_patterns)):
         for pattern in patterns:
             compteur = dict(Counter(pattern))
             iterateur = 0

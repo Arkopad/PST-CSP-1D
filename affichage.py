@@ -36,9 +36,9 @@ def affichage(PATTERNS, pertes):
                 plt.text(longueur + bobine / 2, i*15 + 5,
                          bobine, ha='center', va='center')
                 longueur = bobine + longueur
-        plt.text(-5, i*15 + 5,
+        plt.text(-(longueur_bobine_max*0.05), i*15 + 5,
                  f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='black')
-        plt.text(longueur + 5, i*15 + 5,
+        plt.text(longueur + (longueur_bobine_max*0.05), i*15 + 5,
                  f'x{PATTERNS[i][-1][2]}', ha='center', va='center', color='black')
 
     plt.gca().axes.get_yaxis().set_visible(False)
