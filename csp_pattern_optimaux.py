@@ -33,8 +33,8 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [4, 6]
-LISTE_BOBINE_VOULUE = [[60, 70], [2, 4]]
+LONGUEUR_BOBINE_PERE = [100, 150, 80]
+LISTE_BOBINE_VOULUE = [[600, 700, 500, 400], [2, 4, 8, 3]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10
@@ -75,6 +75,7 @@ def perte_nulle():
         pattern_perte_nulle : liste des patterns qui ne font pas perdre de matière première de la forme [[pattern, nombre de répétitions, longueur de la bobine père], ...]
         liste : liste des bobines restantes après utilisation des patterns
     """
+
     liste = deepcopy(LISTE_BOBINE_VOULUE)
     pattern_perte_nulle = []
     tous_patterns = combinaisons(
@@ -98,7 +99,6 @@ def perte_nulle():
             liste[1].pop(i)
     if len(liste[0]) == 0:
         liste = None
-
     return pattern_perte_nulle, liste
 
 
@@ -109,28 +109,20 @@ def perte_minimale(pattern, liste):
         pattern : liste des patterns qui ne font pas perdre de matière première
         liste : liste des bobines restantes après utilisation des patterns
     sortie :
-        pattern_final : pattern final de la forme [[pattern, nombre de répétitions, longueur de la bobine père], ...]
+        pattern : pattern final de la forme [[pattern, nombre de répétitions, longueur de la bobine père], ...]
     """
-    pattern_final = []
-
-    mise_en_forme = []
-    for listes in pattern:
-        mise_en_forme.extend(bobine for bobine in listes[0])
-        mise_en_forme.append([listes[-1], 0, listes[-2]])
-        pattern_final.append(mise_en_forme)
-        mise_en_forme = []
 
     pattern_random, pertes = csp_random.func_csp_random(LONGUEUR_BOBINE_PERE, liste,
                                                         TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, False)
-    pattern_final.extend(pattern_random)
+    pattern.extend(pattern_random)
 
     pertes = 0
     total = 0
-    for i in pattern_final:
+    for i in pattern:
         pertes += i[-1][1]*i[-1][2]
         total += i[-1][0]*i[-1][2]
     coeff_pertes = 100 - abs(pertes - total) / total * 100
-    affichage.affichage(pattern_final, coeff_pertes)
+    affichage.affichage(pattern, coeff_pertes)
 
 
 # PROGRAMME PRINCIPAL
@@ -146,10 +138,16 @@ for i in LISTE_BOBINE_VOULUE[1]:
         exit()
 
 pattern, liste = perte_nulle()
+
+pattern_affichage = []
+mise_en_forme = []
+for listes in pattern:
+    mise_en_forme.extend(bobine for bobine in listes[0])
+    mise_en_forme.append([listes[-1], 0, listes[-2]])
+    pattern_affichage.append(mise_en_forme)
+    mise_en_forme = []
+
 if liste:
-
-    perte_minimale(pattern, liste)
-
-
-# TODO : faire les combinaisons possibles de pertes nulles pour avoir celle qui minimise le nombre de bobines restantes
-# TODO : faire les combinaisons possibles de pertes minimales pour avoir celle qui minimise la perte de matière première
+    perte_minimale(pattern_affichage, liste)
+else:
+    affichage.affichage(pattern_affichage, 0)
