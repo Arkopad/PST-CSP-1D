@@ -19,8 +19,12 @@ ITERATION_MINIMISATION_PERTES = 5000
 # liste_bobine_voulu = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
-longueur_bobine_pere = [150, 100]
-liste_bobine_voulu = [[600, 700, 500], [30, 45, 50]]
+# longueur_bobine_pere = [150, 100]
+# liste_bobine_voulu = [[600, 700, 500], [30, 45, 50]]
+
+# user mode
+longueur_bobine_pere = [150, 100, 160, 140, 83]
+liste_bobine_voulu = [[600, 700, 500, 400, 140, 56], [30, 45, 50, 43, 67, 83]]
 
 affichage_graphique = True
 
