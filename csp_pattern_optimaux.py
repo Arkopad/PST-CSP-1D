@@ -132,10 +132,10 @@ def perte_minimale(pattern, liste):
     pertes = 0
     total = 0
     for i in pattern_final:
-        pertes += i[-1][1]
+        pertes += i[-1][1]*i[-1][2]
         total += i[-1][0]*i[-1][2]
     coeff_pertes = 100 - abs(pertes - total) / total * 100
-
+    print(total, pertes, pattern_final)
     affichage.affichage(pattern_final, coeff_pertes)
 
 
