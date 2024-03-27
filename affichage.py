@@ -6,7 +6,7 @@ import matplotlib.patches as patches
 #            [30, 30, [100, 40, 2]], [30, 30, [100, 40, 2]], [30, 30, 20, 20, 10, [150, 40, 2]], [30, 30, [140, 80, 2]]]
 
 
-def affichage(PATTERNS):
+def affichage(PATTERNS, pertes):
 
     plt.close('all')
     fig, ax = plt.subplots()
@@ -45,5 +45,5 @@ def affichage(PATTERNS):
     plt.xticks(range(0, longueur_bobine_max + 1, longueur_bobine_max))
     plt.ylim(0, nombre_patterns*15 - 5)
     plt.xlim(0, longueur_bobine_max)
-
+    plt.title(f'Pertes : {pertes:.2f}%')
     plt.show()

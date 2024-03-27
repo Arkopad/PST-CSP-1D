@@ -153,4 +153,4 @@ for item, count in counts.items():
     test[-1].append(count)
     pattern_finaux.append(test)
 
-affichage.affichage(pattern_finaux)
+affichage.affichage(pattern_finaux, pertes)
