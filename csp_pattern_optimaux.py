@@ -1,15 +1,16 @@
 from collections import Counter
 from copy import deepcopy
 from itertools import combinations_with_replacement, permutations
-import csp_random
-import affichage
 import random
 from tqdm import tqdm
+import csp_random
+import affichage
+
 
 ####################################################################################################
 #                                                                                                  #
-#   Auteurs : MEYNARD Lucien, REYNIER Damien                                                        #
-#   Date : 20/03/2024                                                                               #
+#   Auteurs : MEYNARD Lucien, REYNIER Damien                                                       #
+#   Date : 20/03/2024                                                                              #
 #                                                                                                  #
 ####################################################################################################
 
