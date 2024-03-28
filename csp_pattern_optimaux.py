@@ -110,7 +110,7 @@ def perte_nulle():
         LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
     pattern_perte_nulle = []
     liste_finale = [[sum(LISTE_BOBINE_VOULUE[0])]]
-    for comb in tqdm(tous_patterns):
+    for comb in tqdm(tous_patterns, desc="Calcul des combinaisons", leave=False):
 
         liste = deepcopy(LISTE_BOBINE_VOULUE)
 
