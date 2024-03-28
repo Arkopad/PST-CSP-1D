@@ -88,7 +88,7 @@ def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECO
         # on lance la boucle iterations fois pour minimiser les pertes sur chaque sous liste
         coeff_pertes = 100
 
-        for i in tqdm(range(iterations), desc="Calcul des combinaisons", leave=False):
+        for i in tqdm(range(iterations), desc="Résolution aléatoire ", leave=False):
             liste_complete = decoupage_probleme(
                 LISTE_BOBINE_VOULUE, total_nombre_bobine_voulue, TAILLE_LISTE_DECOUPEE)
             pattern_aleatoire = []
