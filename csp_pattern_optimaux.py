@@ -43,7 +43,7 @@ ITERATION_MINIMISATION_PERTES = 1000
 # si combinaisons > FACTORIELLE_MAX : échantillon aléatoire de NOMBRE_COMBINAISONS combinaisons
 NOMBRE_COMBINAISONS = 1000
 # 6! = 720      7! = 5.040      8! = 40.320      9! = 362.880      10! = 3.628.800
-FACTORIELLE_MAX = 12
+FACTORIELLE_MAX = 7
 
 
 #   FONCTIONS
