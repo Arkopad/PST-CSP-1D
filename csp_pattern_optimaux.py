@@ -21,6 +21,7 @@ import affichage
 #   Il prend en entrée les longueurs des bobines pères et des bobines fils, et retourne les combinaisons possibles
 #   pour chaque bobine père, ainsi que les combinaisons qui minimisent la perte de matière première.
 
+# TODO: Faire la resolutions des bobines restantes apres avoir trouvé les combinaisons optimales avec de la resolution linéaire au lieu de la resolution aléatoire
 
 #   VARIABLES
 #   ---------
