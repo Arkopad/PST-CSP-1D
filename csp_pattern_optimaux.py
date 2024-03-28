@@ -3,7 +3,6 @@ from copy import deepcopy
 from itertools import combinations_with_replacement, permutations
 import csp_random
 import affichage
-from tqdm import tqdm
 
 ####################################################################################################
 #                                                                                                  #
@@ -30,15 +29,15 @@ from tqdm import tqdm
 # LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
-# LONGUEUR_BOBINE_PERE = [150, 100]
-# LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
+LONGUEUR_BOBINE_PERE = [150, 100]
+LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [1000, 1500]
-LISTE_BOBINE_VOULUE = [[600, 700, 500, 400], [20, 40, 80, 30]]
+# LONGUEUR_BOBINE_PERE = [150, 100]
+# LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
 
 TAILLE_LISTE_DECOUPEE = 0
-ITERATION_MINIMISATION_PERTES = 10
+ITERATION_MINIMISATION_PERTES = 1000
 
 
 #   FONCTIONS
@@ -57,13 +56,20 @@ def combinaisons(liste_pere, liste_fils):
         tous_patterns : liste des combinaisons possibles pour chaque bobine père de la forme [[combinaison1, combinaison2, ...], [combinaison1, combinaison2, ...], ...]
     """
     tous_patterns = []
-    for pere in tqdm(liste_pere):
-        patterns_pere = []
+    patterns_pere = []
+
+    for pere in liste_pere:
         for r in range(1, pere // min(liste_fils) + 1):
             for comb in combinations_with_replacement(liste_fils, r):
                 if sum(comb) == pere:
-                    patterns_pere.append(comb)
+
+                    patterns_pere.append([comb, pere])
+
         tous_patterns.append(patterns_pere)
+    tous_patterns = tous_patterns[0]
+    tous_patterns = [list(permutation)
+                     for permutation in permutations(tous_patterns)]
+
     return tous_patterns
 
 
@@ -77,30 +83,43 @@ def perte_nulle():
         liste : liste des bobines restantes après utilisation des patterns
     """
 
-    liste = deepcopy(LISTE_BOBINE_VOULUE)
-    pattern_perte_nulle = []
     tous_patterns = combinaisons(
         LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
+    pattern_perte_nulle = []
+    liste_finale = [[sum(LISTE_BOBINE_VOULUE[0])]]
+    for comb in tous_patterns:
 
-    for pere, patterns in tqdm(zip(LONGUEUR_BOBINE_PERE, tous_patterns)):
-        for pattern in patterns:
-            compteur = dict(Counter(pattern))
-            iterateur = 0
-            while all(liste[0][liste[1].index(element)] >= nombre for element, nombre in zip(compteur.keys(), compteur.values())):
-                iterateur += 1
-                for element, nombre in zip(compteur.keys(), compteur.values()):
-                    liste[0][liste[1].index(element)] -= nombre
+        liste = deepcopy(LISTE_BOBINE_VOULUE)
 
-            if iterateur != 0:
-                pattern_perte_nulle.append([pattern, iterateur, pere])
+        pattern_perte_nulle_temp = []
 
-    for i, restant in reversed(list(enumerate(liste[0]))):
-        if restant == 0:
-            liste[0].pop(i)
-            liste[1].pop(i)
-    if len(liste[0]) == 0:
-        liste = None
-    return pattern_perte_nulle, liste
+        for patterns in comb:
+            for pattern in patterns[:-1]:
+                compteur = dict(Counter(pattern))
+                iterateur = 0
+                while all(liste[0][liste[1].index(element)] >= nombre for element, nombre in zip(compteur.keys(), compteur.values())):
+                    iterateur += 1
+                    for element, nombre in zip(compteur.keys(), compteur.values()):
+                        liste[0][liste[1].index(element)] -= nombre
+
+                if iterateur != 0:
+                    pattern_perte_nulle_temp.append(
+                        [pattern, iterateur, patterns[-1]])
+
+        for i, restant in reversed(list(enumerate(liste[0]))):
+            if restant == 0:
+                liste[0].pop(i)
+                liste[1].pop(i)
+        if len(liste[0]) == 0:
+            liste = None
+            pattern_perte_nulle = pattern_perte_nulle_temp
+
+            return pattern_perte_nulle, liste
+        elif sum(liste[0]) < sum(liste_finale[0]):
+            liste_finale = liste
+            pattern_perte_nulle = pattern_perte_nulle_temp
+
+    return pattern_perte_nulle, liste_finale
 
 
 def perte_minimale(pattern, liste):
