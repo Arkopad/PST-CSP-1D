@@ -3,6 +3,8 @@ from copy import deepcopy
 from itertools import combinations_with_replacement, permutations
 import csp_random
 import affichage
+import random
+from tqdm import tqdm
 
 ####################################################################################################
 #                                                                                                  #
@@ -25,12 +27,12 @@ import affichage
 #   LISTE_BOBINE_VOULUE : liste des longueurs des bobines fils
 
 # single mode
-# LONGUEUR_BOBINE_PERE = [180, 100]
-# LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
+LONGUEUR_BOBINE_PERE = [180, 100]
+LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
-LONGUEUR_BOBINE_PERE = [150, 100]
-LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
+# LONGUEUR_BOBINE_PERE = [150, 100]
+# LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
 # LONGUEUR_BOBINE_PERE = [150, 100]
@@ -38,6 +40,7 @@ LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 1000
+NOMBRE_COMBINAISONS = 1000
 
 
 #   FONCTIONS
@@ -45,6 +48,15 @@ ITERATION_MINIMISATION_PERTES = 1000
 #   combinaisons(liste_pere, liste_fils) : retourne toutes les combinaisons possibles pour chaque père
 #   perte_nulle() : retourne les patterns qui ne font pas perdre de matière première
 #   perte_minimale(pattern, liste) : retourne le pattern qui fait perdre le moins de matière première avec les bobines restantes
+
+
+def random_permutation(iterable):
+    "Renvoie une permutation aléatoire de l'itérable"
+    pool = tuple(iterable)
+    r = list(range(len(pool)))
+    random.shuffle(r)
+    return [pool[i] for i in r]
+
 
 def combinaisons(liste_pere, liste_fils):
     """
@@ -66,10 +78,17 @@ def combinaisons(liste_pere, liste_fils):
                     patterns_pere.append([comb, pere])
 
         tous_patterns.append(patterns_pere)
-    tous_patterns = tous_patterns[0]
-    tous_patterns = [list(permutation)
-                     for permutation in permutations(tous_patterns)]
 
+    tous_patterns = tous_patterns[0]
+    if len(tous_patterns) > 9:
+        liste_test = []
+
+        for i in range(NOMBRE_COMBINAISONS):
+            liste_test.append(random_permutation(tous_patterns))
+        tous_patterns = liste_test
+    else:
+        tous_patterns = [list(permutation)
+                         for permutation in permutations(tous_patterns)]
     return tous_patterns
 
 
@@ -87,7 +106,7 @@ def perte_nulle():
         LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
     pattern_perte_nulle = []
     liste_finale = [[sum(LISTE_BOBINE_VOULUE[0])]]
-    for comb in tous_patterns:
+    for comb in tqdm(tous_patterns):
 
         liste = deepcopy(LISTE_BOBINE_VOULUE)
 
