@@ -27,20 +27,23 @@ from tqdm import tqdm
 #   LISTE_BOBINE_VOULUE : liste des longueurs des bobines fils
 
 # single mode
-LONGUEUR_BOBINE_PERE = [180, 100]
-LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
+# LONGUEUR_BOBINE_PERE = [180, 100]
+# LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
 # LONGUEUR_BOBINE_PERE = [150, 100]
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-# LONGUEUR_BOBINE_PERE = [150, 100]
-# LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
+LONGUEUR_BOBINE_PERE = [150, 100]
+LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 1000
+# si combinaisons > FACTORIELLE_MAX : échantillon aléatoire de NOMBRE_COMBINAISONS combinaisons
 NOMBRE_COMBINAISONS = 1000
+# 6! = 720      7! = 5.040      8! = 40.320      9! = 362.880      10! = 3.628.800
+FACTORIELLE_MAX = 12
 
 
 #   FONCTIONS
@@ -80,7 +83,7 @@ def combinaisons(liste_pere, liste_fils):
         tous_patterns.append(patterns_pere)
 
     tous_patterns = tous_patterns[0]
-    if len(tous_patterns) > 9:
+    if len(tous_patterns) > FACTORIELLE_MAX:
         liste_test = []
 
         for i in range(NOMBRE_COMBINAISONS):
