@@ -6,7 +6,9 @@ from itertools import groupby
 def affichage(PATTERNS, pertes):
 
     plt.close('all')
-    fig, ax = plt.subplots()
+
+    fig, ax = plt.subplots(figsize=(15, 8))
+
     colors = ['#C62727', '#27ABC6', '#9B27C6', '#3AC627',
               '#072748', '#48073B', '#B24826', '#0C5021']
     PATTERNS.sort(key=lambda x: x[-1][0], reverse=True)
@@ -26,10 +28,10 @@ def affichage(PATTERNS, pertes):
             ax.add_patch(rectangle)
             if repetition > 1:
                 plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
-                         f"{repetition}x{bobine}", ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
+                         f"{repetition}x{bobine}m", ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             else:
                 plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
-                         bobine, ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
+                         f'{bobine}m', ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             longueur += bobine*repetition
             iterateur += 1
 
@@ -39,14 +41,14 @@ def affichage(PATTERNS, pertes):
                 (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5, alpha=0.8, hatch='/')
             ax.add_patch(rectangle)
             plt.text(longueur + PATTERNS[i][-1][1] / 2, i*15 + 5,
-                     PATTERNS[i][-1][1], ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
+                     f'{PATTERNS[i][-1][1]}m', ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             longueur += PATTERNS[i][-1][1]
 
         # affichage des longueurs de bobines et des répétitions du pattern
-        plt.text(-(longueur_bobine_max*0.05), i*15 + 5,
-                 f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='#050118', fontsize='medium', fontweight='bold')
-        plt.text(longueur + (longueur_bobine_max*0.05), i*15 + 5,
-                 f'x{PATTERNS[i][-1][2]}', ha='center', va='center', color='#050118', fontsize='medium', fontweight='bold')
+        plt.text(-(longueur_bobine_max*0.03), i*15 + 5,
+                 f'{PATTERNS[i][-1][0]}m', ha='center', va='center', color='#050118', fontsize='medium', fontweight='bold')
+        plt.text(longueur + (longueur_bobine_max*0.03), i*15 + 5,
+                 f'{PATTERNS[i][-1][2]}x', ha='center', va='center', color='#050118', fontsize='medium', fontweight='bold')
 
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.gca().axes.get_xaxis().set_visible(False)
@@ -59,8 +61,8 @@ def affichage(PATTERNS, pertes):
     longueur_totale_decoupee = sum(
         [sum(pattern[:-1])*pattern[-1][2] for pattern in PATTERNS])
     longueur_pertes = longueur_totale_pere - longueur_totale_decoupee
-    plt.title(f'Longueur utilisée : {longueur_totale_pere}     Longueur découpée : {longueur_totale_decoupee} \nLongueur perdue : {longueur_pertes}     Pertes : {pertes:.2f}%',
-              fontsize='large', pad=15, fontweight='bold', c='#2FC9C9', )
+    plt.title(f'Longueur utilisée : {longueur_totale_pere}m     Longueur découpée : {longueur_totale_decoupee}m \nLongueur perdue : {longueur_pertes}m     Pertes : {pertes:.2f}%',
+              fontsize='large', pad=25, fontweight='bold', c='#03053D', )
     plt.show()
 
 

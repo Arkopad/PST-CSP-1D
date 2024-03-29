@@ -33,13 +33,13 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
-LONGUEUR_BOBINE_PERE = [150, 100]
-LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
+# LONGUEUR_BOBINE_PERE = [150, 100]
+# LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-# LONGUEUR_BOBINE_PERE = [100]
-# LISTE_BOBINE_VOULUE = [
-#     [1, 1, 1], [2, 4, 6]]
+LONGUEUR_BOBINE_PERE = [100]
+LISTE_BOBINE_VOULUE = [[100, 100, 100, 100, 100, 100, 100],
+                       [2, 4, 6, 3, 5, 7, 8]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10000
@@ -77,12 +77,16 @@ def combinaisons(liste_pere, liste_fils):
     patterns_pere = []
 
     for pere in liste_pere:
-        for r in range(1, pere // min(liste_fils) + 1):
-            for comb in combinations_with_replacement(liste_fils, r):
-                if sum(comb) == pere:
-
-                    patterns_pere.append([comb, pere])
-
+        if pere // min(liste_fils) + 1 > 15:
+            for r in tqdm(range(1, 15), desc="Calcul des combinaisons", leave=False):
+                for comb in combinations_with_replacement(liste_fils, r):
+                    if sum(comb) == pere:
+                        patterns_pere.append([comb, pere])
+        else:
+            for r in tqdm(range(1, pere // min(liste_fils) + 1), desc="Calcul des combinaisons", leave=False):
+                for comb in combinations_with_replacement(liste_fils, r):
+                    if sum(comb) == pere:
+                        patterns_pere.append([comb, pere])
         tous_patterns.append(patterns_pere)
 
     tous_patterns = tous_patterns[0]
