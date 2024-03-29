@@ -33,12 +33,13 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[800, 500, 100], [30, 45, 50]]
 
 # multi mode
-# LONGUEUR_BOBINE_PERE = [150, 100]
-# LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
+LONGUEUR_BOBINE_PERE = [150, 100]
+LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [150, 100]
-LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
+# LONGUEUR_BOBINE_PERE = [100]
+# LISTE_BOBINE_VOULUE = [
+#     [1, 1, 1], [2, 4, 6]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10000
@@ -110,7 +111,8 @@ def perte_nulle():
     tous_patterns = combinaisons(
         LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
     pattern_perte_nulle = []
-    liste_finale = [[sum(LISTE_BOBINE_VOULUE[0])]]
+    liste_finale = [LISTE_BOBINE_VOULUE[0], LISTE_BOBINE_VOULUE[1]]
+
     for comb in tqdm(tous_patterns, desc="Calcul des combinaisons", leave=False):
 
         liste = deepcopy(LISTE_BOBINE_VOULUE)
@@ -139,10 +141,9 @@ def perte_nulle():
             pattern_perte_nulle = pattern_perte_nulle_temp
 
             return pattern_perte_nulle, liste
-        elif sum(liste[0]) < sum(liste_finale[0]):
+        elif sum(liste[0]) <= sum(liste_finale[0]):
             liste_finale = liste
             pattern_perte_nulle = pattern_perte_nulle_temp
-
     return pattern_perte_nulle, liste_finale
 
 
