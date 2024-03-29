@@ -1,9 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
-# forme [decoupe 1, ..., decoupe n, [longueur bobine pere, perte, repetitions]], exemple :
-# PATTERNS = [[35, 60, [150, 55, 4]], [35, 35, [100, 30, 3]], [35, 35, [100, 30, 3]], [30, 30, [100, 40, 2]],
-#            [30, 30, [100, 40, 2]], [30, 30, [100, 40, 2]], [30, 30, 20, 20, 10, [150, 40, 2]], [30, 30, [140, 80, 2]]]
+from itertools import groupby
 
 
 def affichage(PATTERNS, pertes):
@@ -18,32 +15,60 @@ def affichage(PATTERNS, pertes):
 
     for i in range(nombre_patterns):
         longueur = 0
-        for j, bobine in enumerate(PATTERNS[i]):
-            if type(bobine) == list and bobine[1] != 0:
-                bobine = bobine[1]
-                rectangle = patches.Rectangle(
-                    (longueur, i*15), bobine, 10, edgecolor='white', facecolor='black', linewidth=1.5)
-                ax.add_patch(rectangle)
-                plt.text(longueur + bobine / 2, i*15 + 5, bobine,
-                         ha='center', va='center', color='white')
-                longueur = bobine + longueur
+        iterateur = 0
 
-            elif type(bobine) == int:
-                color_index = j % len(colors)
-                rectangle = patches.Rectangle(
-                    (longueur, i*15), bobine, 10, edgecolor='white', facecolor=colors[color_index], linewidth=1.5)
-                ax.add_patch(rectangle)
-                plt.text(longueur + bobine / 2, i*15 + 5,
+        # affichage des bobines
+        for bobine, repetition in groupby(PATTERNS[i][:-1]):
+            repetition = len(list(repetition))
+            color_index = iterateur % len(colors)
+            rectangle = patches.Rectangle(
+                (longueur, i*15), bobine*repetition, 10, edgecolor='white', facecolor=colors[color_index], linewidth=1.5)
+            ax.add_patch(rectangle)
+            if repetition > 1:
+                plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
+                         f"{repetition}x{bobine}", ha='center', va='center')
+            else:
+                plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
                          bobine, ha='center', va='center')
-                longueur = bobine + longueur
+            longueur += bobine*repetition
+            iterateur += 1
+
+        # affichage de la perte restante
+        print(f"longueur avant perte {longueur}")
+        if PATTERNS[i][-1][1] != 0:
+            rectangle = patches.Rectangle(
+                (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5)
+            ax.add_patch(rectangle)
+            plt.text(longueur + PATTERNS[i][-1][1] / 2, i*15 + 5,
+                     PATTERNS[i][-1][1], ha='center', va='center', color='white')
+            longueur += PATTERNS[i][-1][1]
+
+        print(f"longueur apres perte {longueur}")
+        # affichage des longueurs de bobines et des répétitions du pattern
         plt.text(-(longueur_bobine_max*0.05), i*15 + 5,
                  f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='black')
         plt.text(longueur + (longueur_bobine_max*0.05), i*15 + 5,
                  f'x{PATTERNS[i][-1][2]}', ha='center', va='center', color='black')
 
     plt.gca().axes.get_yaxis().set_visible(False)
-    plt.xticks(range(0, longueur_bobine_max + 1, longueur_bobine_max))
+    plt.gca().axes.get_xaxis().set_visible(False)
+    plt.gca().set_frame_on(False)
     plt.ylim(0, nombre_patterns*15 - 5)
     plt.xlim(0, longueur_bobine_max)
-    plt.title(f'Pertes : {pertes:.2f}%')
+    longueur_totale_pere = sum([pattern[-1][0] * pattern[-1][2]
+                                for pattern in PATTERNS])
+
+    longueur_totale_decoupee = sum(
+        [sum(pattern[:-1])*pattern[-1][2] for pattern in PATTERNS])
+    longueur_pertes = longueur_totale_pere - longueur_totale_decoupee
+    plt.title(f'Longueur utilisée : {longueur_totale_pere}, Longueur découpée : {longueur_totale_decoupee} \nLongueur perdue : {longueur_pertes}, Pertes : {pertes:.2f}%',
+              fontsize='large', pad=15, fontweight='bold', c='red')
     plt.show()
+
+
+if __name__ == '__main__':
+    # forme [decoupe 1, ..., decoupe n, [longueur bobine pere, perte, repetitions]], exemple :
+    PATTERNS = [[10, 10, 20, 20, 20, 30, 10, [150, 30, 4]], [10, [100, 90, 3]], [
+        10, 10, 10, 10, 10, 10, 10, 10, 10, 10, [100, 0, 3]], [30, 30, 30, 20, 20, 10, [150, 10, 2]]]
+    pertes = 0
+    affichage(PATTERNS, pertes)
