@@ -34,7 +34,6 @@ def affichage(PATTERNS, pertes):
             iterateur += 1
 
         # affichage de la perte restante
-        print(f"longueur avant perte {longueur}")
         if PATTERNS[i][-1][1] != 0:
             rectangle = patches.Rectangle(
                 (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5)
@@ -43,7 +42,6 @@ def affichage(PATTERNS, pertes):
                      PATTERNS[i][-1][1], ha='center', va='center', color='white')
             longueur += PATTERNS[i][-1][1]
 
-        print(f"longueur apres perte {longueur}")
         # affichage des longueurs de bobines et des répétitions du pattern
         plt.text(-(longueur_bobine_max*0.05), i*15 + 5,
                  f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='black')
