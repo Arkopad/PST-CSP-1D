@@ -26,27 +26,27 @@ def affichage(PATTERNS, pertes):
             ax.add_patch(rectangle)
             if repetition > 1:
                 plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
-                         f"{repetition}x{bobine}", ha='center', va='center')
+                         f"{repetition}x{bobine}", ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             else:
                 plt.text(longueur + (bobine * repetition) / 2, i*15 + 5,
-                         bobine, ha='center', va='center')
+                         bobine, ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             longueur += bobine*repetition
             iterateur += 1
 
         # affichage de la perte restante
         if PATTERNS[i][-1][1] != 0:
             rectangle = patches.Rectangle(
-                (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5)
+                (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5, alpha=0.8, hatch='/')
             ax.add_patch(rectangle)
             plt.text(longueur + PATTERNS[i][-1][1] / 2, i*15 + 5,
-                     PATTERNS[i][-1][1], ha='center', va='center', color='white')
+                     PATTERNS[i][-1][1], ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             longueur += PATTERNS[i][-1][1]
 
         # affichage des longueurs de bobines et des répétitions du pattern
         plt.text(-(longueur_bobine_max*0.05), i*15 + 5,
-                 f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='black')
+                 f'{PATTERNS[i][-1][0]}', ha='center', va='center', color='black', fontsize='medium', fontweight='bold')
         plt.text(longueur + (longueur_bobine_max*0.05), i*15 + 5,
-                 f'x{PATTERNS[i][-1][2]}', ha='center', va='center', color='black')
+                 f'x{PATTERNS[i][-1][2]}', ha='center', va='center', color='black', fontsize='medium', fontweight='bold')
 
     plt.gca().axes.get_yaxis().set_visible(False)
     plt.gca().axes.get_xaxis().set_visible(False)
