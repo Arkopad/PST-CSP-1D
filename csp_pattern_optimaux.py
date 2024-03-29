@@ -37,7 +37,7 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [100]
+LONGUEUR_BOBINE_PERE = [100, 150, 160, 170, 180]
 LISTE_BOBINE_VOULUE = [[100, 100, 100, 100, 100, 100, 100],
                        [2, 4, 6, 3, 5, 7, 8]]
 
