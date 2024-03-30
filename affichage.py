@@ -61,7 +61,7 @@ def affichage(PATTERNS, pertes):
     longueur_totale_decoupee = sum(
         [sum(pattern[:-1])*pattern[-1][2] for pattern in PATTERNS])
     longueur_pertes = longueur_totale_pere - longueur_totale_decoupee
-    plt.title(f'Longueur utilisée : {longueur_totale_pere}m     Longueur découpée : {longueur_totale_decoupee:.2f}m \nLongueur perdue : {longueur_pertes:.2f}m     Pertes : {pertes:.2f}%',
+    plt.title(f'Longueur utilisée : {longueur_totale_pere:.2f}m     Longueur découpée : {longueur_totale_decoupee:.2f}m \nLongueur perdue : {longueur_pertes:.2f}m     Pertes : {pertes:.2f}%',
               fontsize='large', pad=25, fontweight='bold', c='#03053D', )
     plt.show()
 

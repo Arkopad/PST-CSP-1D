@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 # Importation des fonctions
 from csp_pattern_optimaux import main
+from csp_random import func_csp_random
 
 
 class MenuPrincipal():
@@ -93,22 +94,41 @@ class MenuPrincipal():
 
     def single_mode(self):
         """
-        def: sur appui du bouton "mode libre", détruit la fenêtre principale et lance le mode libre
+        def: 
         """
-        main([180, 100], [[800, 500, 100], [30, 45, 50]])
+        response = messagebox.askyesno(
+            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
+        if response:
+            main([180, 100], [[800, 500, 100], [30, 45, 50]])
+        else:
+            func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
+                            0, 1000, True)
 
     def multi_mode(self):
         """
-        def: sur appui du bouton "mode aléatoire", détruit la fenêtre principale et affiche la fenêtre paramètre
+        def:
         """
-        main([150, 100], [[600, 700, 500], [30, 45, 50]])
+        response = messagebox.askyesno(
+            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
+        if response:
+            main([150, 100], [[600, 700, 500], [30, 45, 50]])
+        else:
+            func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
+                            0, 1000, True)
 
     def user_mode(self):
         """
-        def: sur appui du bouton "mode combinaison", détruit la fenêtre principale et affiche la fenêtre paramètre
+        def:
         """
-        main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
-                          [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
+        response = messagebox.askyesno(
+            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
+        if response:
+            main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
+                              [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
+        else:
+            func_csp_random([100, 150], [[102, 103, 104, 101, 33, 100, 100],
+                                         [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]],
+                            0, 1000, True)
 
 
 if __name__ == "__main__":
