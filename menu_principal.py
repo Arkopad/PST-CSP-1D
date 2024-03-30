@@ -234,7 +234,6 @@ class MenuPrincipal():
         nombre_bobine_fils = self.nombre_bobine_fils.get().split(',')
         nombre_bobine_fils = [int(i) for i in nombre_bobine_fils]
 
-        self.temp_window.destroy()
         if self.optimal_resolution.get():
             main(longueur_bobine_pere, [
                  nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
