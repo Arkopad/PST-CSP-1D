@@ -7,6 +7,14 @@ from csp_pattern_optimaux import main
 from csp_random import func_csp_random
 
 
+class ImageCheckbutton(tk.Checkbutton):
+    def __init__(self, master=None, checked_image=None, unchecked_image=None, **kwargs):
+        self.checked_image = tk.PhotoImage(file='checked.png')
+        self.unchecked_image = tk.PhotoImage(file='unchecked.jpg')
+        super().__init__(master, image=self.unchecked_image,
+                         selectimage=self.checked_image, **kwargs)
+
+
 class MenuPrincipal():
     def __init__(self):
         # Create the main window using tkinter
@@ -48,6 +56,29 @@ class MenuPrincipal():
             font=("Helvetica", 30, "bold")
         )
         self.titre.pack(pady=4)
+
+        # Checkbox pour la résolution optimale
+        self.optimal_resolution = tk.IntVar()
+        self.checkbox = ImageCheckbutton(
+            self.racine,
+            text="Résolution optimale",
+            variable=self.optimal_resolution,
+            # Remplacez par le chemin vers votre image pour l'état coché
+            checked_image='checked.png',
+            # Remplacez par le chemin vers votre image pour l'état non coché
+            unchecked_image='unchecked.png',
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 24, "bold"),
+            activebackground="white",
+            activeforeground="black",
+            bd=2,
+            relief="sunken",
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        )
+        self.checkbox.pack(ipady=6, expand=True)
 
         # Bouton single mode
         self.single = tk.Button(
@@ -96,39 +127,33 @@ class MenuPrincipal():
         """
         def: 
         """
-        response = messagebox.askyesno(
-            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
-        if response:
+        if self.optimal_resolution.get():
             main([180, 100], [[800, 500, 100], [30, 45, 50]])
         else:
             func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
-                            0, 1000, True)
+                            0, 5000, True)
 
     def multi_mode(self):
         """
         def:
         """
-        response = messagebox.askyesno(
-            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
-        if response:
+        if self.optimal_resolution.get():
             main([150, 100], [[600, 700, 500], [30, 45, 50]])
         else:
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
-                            0, 1000, True)
+                            0, 5000, True)
 
     def user_mode(self):
         """
         def:
         """
-        response = messagebox.askyesno(
-            "Type de résolution", "Voulez vous utiliser la résolution optimale ?")
-        if response:
+        if self.optimal_resolution.get():
             main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
                               [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
         else:
             func_csp_random([100, 150], [[102, 103, 104, 101, 33, 100, 100],
                                          [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]],
-                            0, 1000, True)
+                            0, 5000, True)
 
 
 if __name__ == "__main__":
