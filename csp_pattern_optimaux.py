@@ -102,7 +102,7 @@ def combinaisons(liste_pere, liste_fils):
     return tous_patterns
 
 
-def perte_nulle():
+def perte_nulle(longueur_bobine_pere, liste_bobine_voulue):
     """
     Fonction qui retourne les patterns qui ne font pas perdre de matière première
     entree : 
@@ -113,13 +113,13 @@ def perte_nulle():
     """
 
     tous_patterns = combinaisons(
-        LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE[1])
+        longueur_bobine_pere, liste_bobine_voulue[1])
     pattern_perte_nulle = []
-    liste_finale = [LISTE_BOBINE_VOULUE[0], LISTE_BOBINE_VOULUE[1]]
+    liste_finale = [liste_bobine_voulue[0], liste_bobine_voulue[1]]
 
     for comb in tqdm(tous_patterns, desc="Calcul des combinaisons", leave=False):
 
-        liste = deepcopy(LISTE_BOBINE_VOULUE)
+        liste = deepcopy(liste_bobine_voulue)
 
         pattern_perte_nulle_temp = []
 
@@ -176,27 +176,31 @@ def perte_minimale(pattern, liste):
 
 # PROGRAMME PRINCIPAL
 # -------------------
+def main(longueur_bobine_pere, liste_bobine_voulue):
+    longueur_bobine_pere.sort()
 
-LONGUEUR_BOBINE_PERE.sort()
+    # on verifie que toutes les tailles sont inférieures à la plus grande bobine pere
+    for i in liste_bobine_voulue[1]:
+        if i > max(longueur_bobine_pere):
+            print(
+                "Erreur, une des tailles demandées est supérieure à la plus grande bobine père")
+            exit()
 
-# on verifie que toutes les tailles sont inférieures à la plus grande bobine pere
-for i in LISTE_BOBINE_VOULUE[1]:
-    if i > max(LONGUEUR_BOBINE_PERE):
-        print(
-            "Erreur, une des tailles demandées est supérieure à la plus grande bobine père")
-        exit()
+    pattern, liste = perte_nulle(longueur_bobine_pere, liste_bobine_voulue)
 
-pattern, liste = perte_nulle()
-
-pattern_affichage = []
-mise_en_forme = []
-for listes in pattern:
-    mise_en_forme.extend(bobine for bobine in listes[0])
-    mise_en_forme.append([listes[-1], 0, listes[-2]])
-    pattern_affichage.append(mise_en_forme)
+    pattern_affichage = []
     mise_en_forme = []
+    for listes in pattern:
+        mise_en_forme.extend(bobine for bobine in listes[0])
+        mise_en_forme.append([listes[-1], 0, listes[-2]])
+        pattern_affichage.append(mise_en_forme)
+        mise_en_forme = []
 
-if liste:
-    perte_minimale(pattern_affichage, liste)
-else:
-    affichage.affichage(pattern_affichage, 0)
+    if liste:
+        perte_minimale(pattern_affichage, liste)
+    else:
+        affichage.affichage(pattern_affichage, 0)
+
+
+if __name__ == "__main__":
+    main(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE)
