@@ -7,14 +7,6 @@ from csp_pattern_optimaux import main
 from csp_random import func_csp_random
 
 
-class ImageCheckbutton(tk.Checkbutton):
-    def __init__(self, master=None, checked_image=None, unchecked_image=None, **kwargs):
-        self.checked_image = tk.PhotoImage(file='checked.png')
-        self.unchecked_image = tk.PhotoImage(file='unchecked.jpg')
-        super().__init__(master, image=self.unchecked_image,
-                         selectimage=self.checked_image, **kwargs)
-
-
 class MenuPrincipal():
     def __init__(self):
         # Create the main window using tkinter
@@ -59,17 +51,15 @@ class MenuPrincipal():
 
         # Checkbox pour la résolution optimale
         self.optimal_resolution = tk.IntVar()
-        self.checkbox = ImageCheckbutton(
+        self.optimal_resolution.set(1)
+        self.checkbox = tk.Checkbutton(
             self.racine,
             text="Résolution optimale",
             variable=self.optimal_resolution,
-            # Remplacez par le chemin vers votre image pour l'état coché
-            checked_image='checked.png',
-            # Remplacez par le chemin vers votre image pour l'état non coché
-            unchecked_image='unchecked.png',
             bg="#010D19",
             fg="#A5A5B5",
             font=("Helvetica", 24, "bold"),
+            selectcolor="black",
             activebackground="white",
             activeforeground="black",
             bd=2,
@@ -111,7 +101,7 @@ class MenuPrincipal():
             text="Mode utilisateur",
             bg="#010D19",
             fg="#A5A5B5",
-            command=self.user_mode,
+            command=self.parametre_user_mode,
             font=("Helvetica", 24, "bold"),
         )
         self.user.pack(ipady=6, expand=True)
@@ -143,10 +133,99 @@ class MenuPrincipal():
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
 
-    def user_mode(self):
+    def parametre_user_mode(self):
         """
         def:
         """
+        # Create a new temporary window
+        self.temp_window = tk.Toplevel(self.racine)
+        self.temp_window.title('Paramètres utilisateur')
+        self.temp_window.geometry('900x600')
+        self.temp_window.configure(bg='#141418')
+        self.temp_window.resizable(False, False)
+        # Frame du titre du jeu en haut de l'écran
+        self.frame_top = tk.Frame(
+            self.temp_window,
+            bg="#010D19",
+            highlightthickness=5,
+            highlightbackground="black",
+        )
+        self.frame_top.pack(fill=tk.X, pady=12)
+
+        # Label du titre du jeu
+        self.titre = tk.Label(
+            self.frame_top,
+            text="Choix des paramètres utilisateur",
+            bg="#010D19",
+            fg="#A5A5B5",
+            # Increase font size and make it bold
+            font=("Helvetica", 25, "bold")
+        )
+        self.titre.pack(pady=4)
+
+        # Affectation des touches
+        self.racine.bind_all("<Key-Escape>", self.echap)
+
+        # zone de texte pour les longueurs des bobines pères
+        self.longueur_bobine_pere = tk.Entry(
+            self.temp_window,
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 15, "bold"),
+            width=30,
+            justify='center',
+            insertbackground='white',
+        )
+        self.longueur_bobine_pere.insert(
+            0, '150, 100, 70')
+        self.longueur_bobine_pere.pack(ipady=6, expand=True)
+
+        # zone de texte pour les longueurs des bobines fils
+        self.longueur_bobine_fils = tk.Entry(
+            self.temp_window,
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 15, "bold"),
+            width=30,
+            justify='center',
+            insertbackground='white',
+        )
+        self.longueur_bobine_fils.insert(
+            0, '40, 50, 60, 80')
+
+        self.longueur_bobine_fils.pack(ipady=6, expand=True)
+
+        # zone de texte pour le nombre de bobines fils
+        self.nombre_bobine_fils = tk.Entry(
+            self.temp_window,
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 15, "bold"),
+            width=30,
+            justify='center',
+            insertbackground='white',
+        )
+        self.nombre_bobine_fils.insert(
+            0, '100, 500, 500, 300')
+        self.nombre_bobine_fils.pack(ipady=6, expand=True)
+
+        # Create a button in the temporary window
+        self.validate_button = tk.Button(
+            self.temp_window,
+            cursor="hand2",
+            text="Lancer la résolution",
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 24, "bold"),
+            command=self.user_mode,
+        )
+        self.validate_button.pack(ipady=6, expand=True)
+
+    def user_mode(self):
+        """
+            def: This function will execute the user_mode function and destroy the temp_window
+            """
+        self.temp_window.destroy()
         if self.optimal_resolution.get():
             main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
                               [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
@@ -157,6 +236,7 @@ class MenuPrincipal():
 
 
 if __name__ == "__main__":
+
     # Lancement de la fenêtre principale
     menu_principal = MenuPrincipal()
     menu_principal.racine.mainloop()
