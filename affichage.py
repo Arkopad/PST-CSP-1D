@@ -41,7 +41,7 @@ def affichage(PATTERNS, pertes):
                 (longueur, i*15), PATTERNS[i][-1][1], 10, edgecolor='white', facecolor='black', linewidth=1.5, alpha=0.8, hatch='/')
             ax.add_patch(rectangle)
             plt.text(longueur + PATTERNS[i][-1][1] / 2, i*15 + 5,
-                     f'{PATTERNS[i][-1][1]}m', ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
+                     f'{PATTERNS[i][-1][1]:.2f}m', ha='center', va='center', color='white', bbox=dict(facecolor='black', boxstyle='round', linewidth=0, alpha=0.7), fontsize='small', fontweight='bold')
             longueur += PATTERNS[i][-1][1]
 
         # affichage des longueurs de bobines et des répétitions du pattern
@@ -61,7 +61,7 @@ def affichage(PATTERNS, pertes):
     longueur_totale_decoupee = sum(
         [sum(pattern[:-1])*pattern[-1][2] for pattern in PATTERNS])
     longueur_pertes = longueur_totale_pere - longueur_totale_decoupee
-    plt.title(f'Longueur utilisée : {longueur_totale_pere}m     Longueur découpée : {longueur_totale_decoupee}m \nLongueur perdue : {longueur_pertes}m     Pertes : {pertes:.2f}%',
+    plt.title(f'Longueur utilisée : {longueur_totale_pere}m     Longueur découpée : {longueur_totale_decoupee:.2f}m \nLongueur perdue : {longueur_pertes:.2f}m     Pertes : {pertes:.2f}%',
               fontsize='large', pad=25, fontweight='bold', c='#03053D', )
     plt.show()
 

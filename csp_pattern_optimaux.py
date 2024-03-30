@@ -37,9 +37,9 @@ import affichage
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [100, 150, 160, 170, 180]
-LISTE_BOBINE_VOULUE = [[100, 100, 100, 100, 100, 100, 100],
-                       [2, 4, 6, 3, 5, 7, 8]]
+LONGUEUR_BOBINE_PERE = [100, 150]
+LISTE_BOBINE_VOULUE = [[102, 103, 104, 101, 33, 100, 100],
+                       [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10000
