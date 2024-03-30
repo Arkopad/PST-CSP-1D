@@ -14,6 +14,9 @@ class MenuPrincipal():
         self.racine.configure(bg='#141418')
         self.racine.resizable(False, False)
 
+        # Set the title of the window
+        self.racine.title('Cutting Stock Problem - 1D')
+
         # Affectation des touches
         self.racine.bind_all("<Key-Escape>", self.echap)
 
@@ -37,9 +40,11 @@ class MenuPrincipal():
         # Label du titre du jeu
         self.titre = tk.Label(
             self.frame_top,
-            text="CSP 1D",
+            text="Cutting Stock Problem - 1D",
             bg="#010D19",
             fg="#A5A5B5",
+            # Increase font size and make it bold
+            font=("Helvetica", 30, "bold")
         )
         self.titre.pack(pady=4)
 
@@ -51,6 +56,7 @@ class MenuPrincipal():
             bg="#010D19",
             fg="#A5A5B5",
             command=self.single_mode,
+            font=("Helvetica", 24, "bold"),
         )
         self.single.pack(ipady=6, expand=True)
 
@@ -62,6 +68,7 @@ class MenuPrincipal():
             bg="#010D19",
             fg="#A5A5B5",
             command=self.multi_mode,
+            font=("Helvetica", 24, "bold"),
         )
         self.multi.pack(ipady=6, expand=True)
 
@@ -73,6 +80,7 @@ class MenuPrincipal():
             bg="#010D19",
             fg="#A5A5B5",
             command=self.user_mode,
+            font=("Helvetica", 24, "bold"),
         )
         self.user.pack(ipady=6, expand=True)
 
@@ -87,21 +95,18 @@ class MenuPrincipal():
         """
         def: sur appui du bouton "mode libre", détruit la fenêtre principale et lance le mode libre
         """
-        print("Single mode")
         main([180, 100], [[800, 500, 100], [30, 45, 50]])
 
     def multi_mode(self):
         """
         def: sur appui du bouton "mode aléatoire", détruit la fenêtre principale et affiche la fenêtre paramètre
         """
-        print("Multi mode")
         main([150, 100], [[600, 700, 500], [30, 45, 50]])
 
     def user_mode(self):
         """
         def: sur appui du bouton "mode combinaison", détruit la fenêtre principale et affiche la fenêtre paramètre
         """
-        print("Mode utilisateur")
         main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
                           [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
 
