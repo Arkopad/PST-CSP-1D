@@ -83,7 +83,7 @@ def combinaisons(liste_pere, liste_fils):
                     if sum(comb) == pere:
                         patterns_pere.append([comb, pere])
         else:
-            for r in tqdm(range(1, pere // min(liste_fils) + 1), desc="Calcul des combinaisons", leave=False):
+            for r in tqdm(range(1, round(pere // min(liste_fils)) + 1), desc="Calcul des combinaisons", leave=False):
                 for comb in combinations_with_replacement(liste_fils, r):
                     if sum(comb) == pere:
                         patterns_pere.append([comb, pere])
@@ -151,7 +151,7 @@ def perte_nulle(longueur_bobine_pere, liste_bobine_voulue):
     return pattern_perte_nulle, liste_finale
 
 
-def perte_minimale(pattern, liste):
+def perte_minimale(pattern, longueur_bobine_pere, liste, taille_liste_decoupee, iteration_minimisation_pertes):
     """
     Fonction qui retourne le pattern qui fait perdre le moins de matière première avec les bobines restantes
     entree : 
@@ -161,8 +161,8 @@ def perte_minimale(pattern, liste):
         pattern : pattern final de la forme [[pattern, nombre de répétitions, longueur de la bobine père], ...]
     """
 
-    pattern_random, pertes = csp_random.func_csp_random(LONGUEUR_BOBINE_PERE, liste,
-                                                        TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, False)
+    pattern_random, pertes = csp_random.func_csp_random(longueur_bobine_pere, liste,
+                                                        taille_liste_decoupee, iteration_minimisation_pertes, False)
     pattern.extend(pattern_random)
 
     pertes = 0
@@ -176,7 +176,7 @@ def perte_minimale(pattern, liste):
 
 # PROGRAMME PRINCIPAL
 # -------------------
-def main(longueur_bobine_pere, liste_bobine_voulue):
+def main(longueur_bobine_pere, liste_bobine_voulue, taille_liste_decoupee, iteration_minimisation_pertes):
     longueur_bobine_pere.sort()
 
     # on verifie que toutes les tailles sont inférieures à la plus grande bobine pere
@@ -197,10 +197,12 @@ def main(longueur_bobine_pere, liste_bobine_voulue):
         mise_en_forme = []
 
     if liste:
-        perte_minimale(pattern_affichage, liste)
+        perte_minimale(pattern_affichage, longueur_bobine_pere, liste,
+                       taille_liste_decoupee, iteration_minimisation_pertes)
     else:
         affichage.affichage(pattern_affichage, 0)
 
 
 if __name__ == "__main__":
-    main(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE)
+    main(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE,
+         TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES)

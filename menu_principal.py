@@ -118,7 +118,7 @@ class MenuPrincipal():
         def: 
         """
         if self.optimal_resolution.get():
-            main([180, 100], [[800, 500, 100], [30, 45, 50]])
+            main([180, 100], [[800, 500, 100], [30, 45, 50]], 0, 5000)
         else:
             func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
                             0, 5000, True)
@@ -128,7 +128,7 @@ class MenuPrincipal():
         def:
         """
         if self.optimal_resolution.get():
-            main([150, 100], [[600, 700, 500], [30, 45, 50]])
+            main([150, 100], [[600, 700, 500], [30, 45, 50]], 0, 5000)
         else:
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
@@ -230,14 +230,14 @@ class MenuPrincipal():
         longueur_bobine_pere = self.longueur_bobine_pere.get().split(',')
         longueur_bobine_pere = [int(i) for i in longueur_bobine_pere]
         longueur_bobine_fils = self.longueur_bobine_fils.get().split(',')
-        longueur_bobine_fils = [int(i) for i in longueur_bobine_fils]
+        longueur_bobine_fils = [float(i) for i in longueur_bobine_fils]
         nombre_bobine_fils = self.nombre_bobine_fils.get().split(',')
         nombre_bobine_fils = [int(i) for i in nombre_bobine_fils]
 
         self.temp_window.destroy()
         if self.optimal_resolution.get():
             main(longueur_bobine_pere, [
-                 nombre_bobine_fils, longueur_bobine_fils])
+                 nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
 
         else:
             func_csp_random(longueur_bobine_pere, [

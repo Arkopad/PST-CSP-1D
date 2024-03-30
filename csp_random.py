@@ -29,17 +29,17 @@ LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
 affichage_graphique = True
 
 
-def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECOUPEE, ITERATION_MINIMISATION_PERTES, affichage_graphique):
+def func_csp_random(longueur_bobine_pere, liste_bobine_voulue, taille_liste_decoupee, iteration_minimisation_pertes, affichage_graphique):
 
-    total_nombre_bobine_voulue = sum(LISTE_BOBINE_VOULUE[0])
+    total_nombre_bobine_voulue = sum(liste_bobine_voulue[0])
 
     # On verifie que la taille de la liste de découpe est bien inférieure à la somme des bobines voulues si ce n'est pas le cas on met la taille de la liste de découpe à la somme des bobines voulues
-    if TAILLE_LISTE_DECOUPEE > total_nombre_bobine_voulue or TAILLE_LISTE_DECOUPEE == 0:
-        TAILLE_LISTE_DECOUPEE = total_nombre_bobine_voulue
+    if taille_liste_decoupee > total_nombre_bobine_voulue or taille_liste_decoupee == 0:
+        taille_liste_decoupee = total_nombre_bobine_voulue
 
     # on verifie que toutes les tailles sont inférieures à la plus grande bobine pere
-    for i in LISTE_BOBINE_VOULUE[1]:
-        if i > max(LONGUEUR_BOBINE_PERE):
+    for i in liste_bobine_voulue[1]:
+        if i > max(longueur_bobine_pere):
             print(
                 "Erreur, une des tailles demandées est supérieure à la plus grande bobine père")
             exit()
@@ -90,15 +90,15 @@ def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECO
 
         for i in tqdm(range(iterations), desc="Résolution aléatoire ", leave=False):
             liste_complete = decoupage_probleme(
-                LISTE_BOBINE_VOULUE, total_nombre_bobine_voulue, TAILLE_LISTE_DECOUPEE)
+                liste_bobine_voulue, total_nombre_bobine_voulue, taille_liste_decoupee)
             pattern_aleatoire = []
 
             # j = 1 si la liste de bobine n'a pas été découpée, sinon j = le nombre de sous liste de bobine découpée
-            for j in (range(m.ceil(total_nombre_bobine_voulue / TAILLE_LISTE_DECOUPEE))):
+            for j in (range(m.ceil(total_nombre_bobine_voulue / taille_liste_decoupee))):
 
                 liste = liste_complete[j]
 
-                bobine_pere_aleatoire = rand.choice(LONGUEUR_BOBINE_PERE)
+                bobine_pere_aleatoire = rand.choice(longueur_bobine_pere)
                 # liste qui aura la forme en soustrayant au 2e element les decoupes [longueur pere utilisé, pertes dans la découpe]
                 taille_pere = [bobine_pere_aleatoire, bobine_pere_aleatoire]
                 pattern_aleatoire_temp = []
@@ -120,7 +120,7 @@ def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECO
                         pattern_aleatoire_temp = []
                         pattern_aleatoire[-1].append(taille_pere)
                         bobine_pere_aleatoire = rand.choice(
-                            LONGUEUR_BOBINE_PERE)
+                            longueur_bobine_pere)
                         taille_pere = [bobine_pere_aleatoire,
                                        bobine_pere_aleatoire]
                     else:
@@ -129,7 +129,7 @@ def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECO
                         pattern_aleatoire_temp = []
                         while taille > taille_pere[1]:
                             bobine_pere_aleatoire = rand.choice(
-                                LONGUEUR_BOBINE_PERE)
+                                longueur_bobine_pere)
                             taille_pere = [bobine_pere_aleatoire,
                                            bobine_pere_aleatoire]
 
@@ -152,7 +152,7 @@ def func_csp_random(LONGUEUR_BOBINE_PERE, LISTE_BOBINE_VOULUE, TAILLE_LISTE_DECO
 
         return best_pattern_aleatoire, coeff_pertes
 
-    solution, pertes = resolution_probleme(ITERATION_MINIMISATION_PERTES)
+    solution, pertes = resolution_probleme(iteration_minimisation_pertes)
 
     solution_triee = [sorted(item[:-1], reverse=True) + item[-1:]
                       for item in solution]
