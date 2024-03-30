@@ -225,14 +225,23 @@ class MenuPrincipal():
         """
             def: This function will execute the user_mode function and destroy the temp_window
             """
+
+        # Get the values from the entries
+        longueur_bobine_pere = self.longueur_bobine_pere.get().split(',')
+        longueur_bobine_pere = [int(i) for i in longueur_bobine_pere]
+        longueur_bobine_fils = self.longueur_bobine_fils.get().split(',')
+        longueur_bobine_fils = [int(i) for i in longueur_bobine_fils]
+        nombre_bobine_fils = self.nombre_bobine_fils.get().split(',')
+        nombre_bobine_fils = [int(i) for i in nombre_bobine_fils]
+
         self.temp_window.destroy()
         if self.optimal_resolution.get():
-            main([100, 150], [[102, 103, 104, 101, 33, 100, 100],
-                              [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]])
+            main(longueur_bobine_pere, [
+                 nombre_bobine_fils, longueur_bobine_fils])
+
         else:
-            func_csp_random([100, 150], [[102, 103, 104, 101, 33, 100, 100],
-                                         [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]],
-                            0, 5000, True)
+            func_csp_random(longueur_bobine_pere, [
+                            nombre_bobine_fils, longueur_bobine_fils], 0, 5000, True)
 
 
 if __name__ == "__main__":
