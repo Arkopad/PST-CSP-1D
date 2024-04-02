@@ -166,6 +166,16 @@ class MenuPrincipal():
         # Affectation des touches
         self.racine.bind_all("<Key-Escape>", self.echap)
 
+        # texte pour les longueurs des bobines pères
+        self.label_longueur_bobine_pere = tk.Label(
+            self.temp_window,
+            text="Longueurs des bobines pères :",
+            bg="#141418",
+            fg="#A5A5B5",
+            font=("Helvetica", 13, "bold"),
+        )
+        self.label_longueur_bobine_pere.pack(pady=(30, 0))
+        
         # zone de texte pour les longueurs des bobines pères
         self.longueur_bobine_pere = tk.Entry(
             self.temp_window,
@@ -178,7 +188,17 @@ class MenuPrincipal():
         )
         self.longueur_bobine_pere.insert(
             0, '150, 100, 70')
-        self.longueur_bobine_pere.pack(ipady=6, expand=True)
+        self.longueur_bobine_pere.pack(ipady=6, pady=(0, 50))
+
+        # texte pour les longueurs des bobines fils
+        self.label_longueur_bobine_fils = tk.Label(
+            self.temp_window,
+            text="Longueurs des bobines à découper :",
+            bg="#141418",
+            fg="#A5A5B5",
+            font=("Helvetica", 13, "bold"),
+        )
+        self.label_longueur_bobine_fils.pack()
 
         # zone de texte pour les longueurs des bobines fils
         self.longueur_bobine_fils = tk.Entry(
@@ -193,7 +213,17 @@ class MenuPrincipal():
         self.longueur_bobine_fils.insert(
             0, '40, 50, 60, 80')
 
-        self.longueur_bobine_fils.pack(ipady=6, expand=True)
+        self.longueur_bobine_fils.pack(ipady=6, pady=(0, 50))
+
+        # texte pour le nombre des bobines fils
+        self.label_nombre_bobine_fils = tk.Label(
+            self.temp_window,
+            text="Quantité des bobines à découper :",
+            bg="#141418",
+            fg="#A5A5B5",
+            font=("Helvetica", 13, "bold"),
+        )
+        self.label_nombre_bobine_fils.pack()
 
         # zone de texte pour le nombre de bobines fils
         self.nombre_bobine_fils = tk.Entry(
@@ -207,7 +237,7 @@ class MenuPrincipal():
         )
         self.nombre_bobine_fils.insert(
             0, '100, 500, 500, 300')
-        self.nombre_bobine_fils.pack(ipady=6, expand=True)
+        self.nombre_bobine_fils.pack(ipady=6)
 
         # Create a button in the temporary window
         self.validate_button = tk.Button(
