@@ -11,7 +11,7 @@ def main():
 
     infinity = solver.infinity()
     # x and y are integer non-negative variables.
-    w0 = solver.IntVar(0.0, infinity, "w0")
+    x0 = solver.IntVar(0.0, infinity, "x0")
     x1 = solver.IntVar(0.0, infinity, "x1")
     x2 = solver.IntVar(0.0, infinity, "x2")
     x3 = solver.IntVar(0.0, infinity, "x3")
@@ -38,15 +38,28 @@ def main():
     print("Number of constraints =", solver.NumConstraints())
 
     # Maximize x + 10 * y.
-    solver.Minimize(3*x1 + 2*x3 + 1*x4 + 7*x5 + 6*x6 + 5*x7 + 1*x8 + 11*x10 + 10*x11 + 5*x12)
+    solver.Minimize(1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5 + 1*x6 + 1*x7 + 1*x8 + 1*x9 + 1*x10 + 1*x11 + 1*x12)
 
     print(f"Solving with {solver.SolverVersion()}")
     status = solver.Solve()
 
     if status == pywraplp.Solver.OPTIMAL:
         print("Solution:")
-        print("Objective value =", solver.Objective().Value())
-        print("x =", x.solution_value())
+        print("x0 =", solver.Objective().Value())
+        print("x1 =", x1.solution_value())
+        print("x2 =", x2.solution_value())
+        print("x3 =", x3.solution_value())
+        print("x4 =", x4.solution_value())
+        print("x5 =", x5.solution_value())
+        print("x6 =", x6.solution_value())
+        print("x7 =", x7.solution_value())
+        print("x8 =", x8.solution_value())
+        print("x9 =", x9.solution_value())
+        print("x10 =", x10.solution_value())
+        print("x11 =", x11.solution_value())
+        print("x12 =", x12.solution_value())
+
+
 
     else:
         print("The problem does not have an optimal solution.")
