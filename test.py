@@ -1,45 +1,55 @@
-from pulp import *
-import itertools
+from ortools.linear_solver import pywraplp
 
-LONGUEUR_BOBINE_PERE = [180, 100]
-LISTE_BOBINE_VOULUE = [[30, 45, 50], [800, 500, 100]]
 
-def best_first_decreasing(lengths, max_length):
-    sorted_lengths = sorted(lengths, reverse=True)
-    patterns = []
-    while sorted_lengths:
-        pattern = []
-        remaining = max_length
-        for length in sorted_lengths[:]:
-            if length <= remaining:
-                pattern.append(length)
-                remaining -= length
-                sorted_lengths.remove(length)
-        patterns.append(pattern)
-    return patterns
 
-# Utiliser l'heuristique BFD pour générer les motifs
-motifs = []
-for i in range(len(LONGUEUR_BOBINE_PERE)):
-    motifs.extend(best_first_decreasing(LISTE_BOBINE_VOULUE[0], LONGUEUR_BOBINE_PERE[i]))
 
-# Définir le problème
-prob = LpProblem("Cutting Stock Problem", LpMinimize)
+def main():
+    # Create the mip solver with the SCIP backend.
+    solver = pywraplp.Solver.CreateSolver("SAT")
+    if not solver:
+        return
 
-# Définir les variables
-x = LpVariable.dicts("x", range(len(motifs)), 0, None, LpInteger)
+    infinity = solver.infinity()
+    # x and y are integer non-negative variables.
+    w0 = solver.IntVar(0.0, infinity, "w0")
+    x1 = solver.IntVar(0.0, infinity, "x1")
+    x2 = solver.IntVar(0.0, infinity, "x2")
+    x3 = solver.IntVar(0.0, infinity, "x3")
+    x4 = solver.IntVar(0.0, infinity, "x4")
+    x5 = solver.IntVar(0.0, infinity, "x5")
+    x6 = solver.IntVar(0.0, infinity, "x6")
+    x7 = solver.IntVar(0.0, infinity, "x7")
+    x8 = solver.IntVar(0.0, infinity, "x8")
+    x9 = solver.IntVar(0.0, infinity, "x9")
+    x10 = solver.IntVar(0.0, infinity, "x10")
+    x11= solver.IntVar(0.0, infinity, "x11")
+    x12= solver.IntVar(0.0, infinity, "x12")
 
-# Définir la fonction objectif
-prob += lpSum(x[i] for i in range(len(motifs)))
 
-# Ajouter les contraintes
-for j in range(len(LISTE_BOBINE_VOULUE[0])):
-    prob += lpSum(x[i] for i in range(len(motifs)) if LISTE_BOBINE_VOULUE[0][j] in motifs[i][1]) >= LISTE_BOBINE_VOULUE[1][j]
+    print("Number of variables =", solver.NumVariables())
 
-# Résoudre le problème
-prob.solve()
+    # x + 7 * y <= 17.5.
+    solver.Add(3*x1 + 2*x3 + 1*x4 + 2*x5 + 1*x6 + 1*x8 + 1*x10 == 10)
+    solver.Add(3*x2 + 1*x3 + 2*x4 + 1*x6 + 2*x7 + 1*x9 + 1*x11 == 12)
+    solver.Add(1*x8 + 1*x9 + 1*x12 == 6)
 
-# Afficher les résultats
-for i in range(len(motifs)):
-    if x[i].varValue > 0:
-        print(f"Motif {motifs[i][1]} utilisé {x[i].varValue} fois sur bobine père de longueur {LONGUEUR_BOBINE_PERE[motifs[i][0]]}")
+
+
+    print("Number of constraints =", solver.NumConstraints())
+
+    # Maximize x + 10 * y.
+    solver.Minimize(3*x1 + 2*x3 + 1*x4 + 7*x5 + 6*x6 + 5*x7 + 1*x8 + 11*x10 + 10*x11 + 5*x12)
+
+    print(f"Solving with {solver.SolverVersion()}")
+    status = solver.Solve()
+
+    if status == pywraplp.Solver.OPTIMAL:
+        print("Solution:")
+        print("Objective value =", solver.Objective().Value())
+        print("x =", x.solution_value())
+
+    else:
+        print("The problem does not have an optimal solution.")
+
+if __name__ == "__main__":
+    main()
