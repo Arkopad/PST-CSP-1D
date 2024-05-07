@@ -18,17 +18,19 @@ def combinaisons(liste_pere, liste_fils):
         for combination in combinations:
             if sum(combination) <= liste_pere[0]:
                 combinaison_possibles.append(combination)
-    
+
     representation_vectorielle = []
     for combination in combinaison_possibles:
         vector = [combination.count(length) for length in liste_fils]
         representation_vectorielle.append(vector)
     return representation_vectorielle, combinaison_possibles
-    
+
+
 def prog_lineaire():
-    representation_vectorielle, combinaison_possibles = combinaisons([15], [4,5,10])
-    nombres_pieces = [10,12,6]
-    
+    representation_vectorielle, combinaison_possibles = combinaisons([15], [
+                                                                     4, 5, 10])
+    nombres_pieces = [10, 12, 6]
+
     # Create the mip solver with the SCIP backend.
     solver = pywraplp.Solver.CreateSolver("SAT")
     if not solver:
@@ -37,7 +39,7 @@ def prog_lineaire():
     infinity = solver.infinity()
     # x and y are integer non-negative variables.
     n = len(combinaison_possibles)
-    
+
     variables = []
     for i in range(n+1):
         variables.append(solver.IntVar(0.0, infinity, f"x{i}"))
@@ -46,26 +48,19 @@ def prog_lineaire():
 
         somme += variables[i]
         print(somme, variables[i])
-    
-
-
 
     solver.Add(sum([variables[i] for i in range(n)]) == variables[0])
-    
-    
-    
-    
+
     for i, piece in enumerate(nombres_pieces):
         for j, var in enumerate(variables[1:]):
             if j >= len(combinaison_possibles):
                 break
-            
+
             coeff = representation_vectorielle[j]
             total = solver.Sum([c * var for c in coeff])
 
             solver.Add(total == piece)
 
-            
     objective = solver.Objective()
     for i, var in enumerate(variables[1:]):
         objective.SetCoefficient(var, 1)
@@ -82,9 +77,11 @@ def prog_lineaire():
     else:
         print("The problem does not have an optimal solution.")
 
+
 def prog_lineaire_pulp():
-    representation_vectorielle, combinaison_possibles = combinaisons([15], [4,5,10])
-    nombres_pieces = [10,12,6]
+    representation_vectorielle, combinaison_possibles = combinaisons([15], [
+                                                                     4, 5, 10])
+    nombres_pieces = [10, 12, 6]
 
     # Create the LP problem
     problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
@@ -94,22 +91,22 @@ def prog_lineaire_pulp():
     variables = []
     for i in range(1, n+1):
         variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
-    
-    print(variables)
 
     # Define the objective function
     objective = pulp.LpAffineExpression([(variables[i], 1) for i in range(n)])
     problem += objective
-    
+
     # Define the constraints
     for i, piece in enumerate(nombres_pieces):
-        for j, var in enumerate(variables[1:]):
-            if j >= len(combinaison_possibles):
-                break
+        total = 0
+        for j, var in enumerate(variables):
+
             coeff = representation_vectorielle[j]
-            total = pulp.LpAffineExpression([(var, c) for c in coeff])
-            problem += total == piece
-    print(problem)
+
+            total += pulp.LpAffineExpression([(var, coeff[i])])
+
+        problem += total == piece
+
     # Solve the problem
     problem.solve()
 
@@ -123,6 +120,6 @@ def prog_lineaire_pulp():
     else:
         print("The problem does not have an optimal solution.")
 
+
 if __name__ == "__main__":
     prog_lineaire_pulp()
-    
