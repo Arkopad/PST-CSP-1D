@@ -1,9 +1,34 @@
 from ortools.linear_solver import pywraplp
+from itertools import combinations_with_replacement
+from tqdm import tqdm
+import pulp
 
 
-
-
-def main():
+def combinaisons(liste_pere, liste_fils):
+    """
+    Fonction qui retourne toutes les combinaisons possibles pour chaque père
+    entree : 
+        liste_pere : liste des longueurs des bobines pères
+        liste_fils : liste des longueurs des bobines fils
+    TODO : PENSER A FAIRE UN FOR POUR TOUTES LES BOBINES PERES    
+    """
+    combinaison_possibles = []
+    for r in range(1, len(liste_fils) + 1):
+        combinations = combinations_with_replacement(liste_fils, r)
+        for combination in combinations:
+            if sum(combination) <= liste_pere[0]:
+                combinaison_possibles.append(combination)
+    
+    representation_vectorielle = []
+    for combination in combinaison_possibles:
+        vector = [combination.count(length) for length in liste_fils]
+        representation_vectorielle.append(vector)
+    return representation_vectorielle, combinaison_possibles
+    
+def prog_lineaire():
+    representation_vectorielle, combinaison_possibles = combinaisons([15], [4,5,10])
+    nombres_pieces = [10,12,6]
+    
     # Create the mip solver with the SCIP backend.
     solver = pywraplp.Solver.CreateSolver("SAT")
     if not solver:
@@ -11,58 +36,93 @@ def main():
 
     infinity = solver.infinity()
     # x and y are integer non-negative variables.
-    x0 = solver.IntVar(0.0, infinity, "x0")
-    x1 = solver.IntVar(0.0, infinity, "x1")
-    x2 = solver.IntVar(0.0, infinity, "x2")
-    x3 = solver.IntVar(0.0, infinity, "x3")
-    x4 = solver.IntVar(0.0, infinity, "x4")
-    x5 = solver.IntVar(0.0, infinity, "x5")
-    x6 = solver.IntVar(0.0, infinity, "x6")
-    x7 = solver.IntVar(0.0, infinity, "x7")
-    x8 = solver.IntVar(0.0, infinity, "x8")
-    x9 = solver.IntVar(0.0, infinity, "x9")
-    x10 = solver.IntVar(0.0, infinity, "x10")
-    x11= solver.IntVar(0.0, infinity, "x11")
-    x12= solver.IntVar(0.0, infinity, "x12")
+    n = len(combinaison_possibles)
+    
+    variables = []
+    for i in range(n+1):
+        variables.append(solver.IntVar(0.0, infinity, f"x{i}"))
+    somme = 0
+    for i in range(n+1):
 
-
-    print("Number of variables =", solver.NumVariables())
-
-    # x + 7 * y <= 17.5.
-    solver.Add(3*x1 + 2*x3 + 1*x4 + 2*x5 + 1*x6 + 1*x8 + 1*x10 == 10)
-    solver.Add(3*x2 + 1*x3 + 2*x4 + 1*x6 + 2*x7 + 1*x9 + 1*x11 == 12)
-    solver.Add(1*x8 + 1*x9 + 1*x12 == 6)
+        somme += variables[i]
+        print(somme, variables[i])
+    
 
 
 
-    print("Number of constraints =", solver.NumConstraints())
+    solver.Add(sum([variables[i] for i in range(n)]) == variables[0])
+    
+    
+    
+    
+    for i, piece in enumerate(nombres_pieces):
+        for j, var in enumerate(variables[1:]):
+            if j >= len(combinaison_possibles):
+                break
+            
+            coeff = representation_vectorielle[j]
+            total = solver.Sum([c * var for c in coeff])
 
-    # Maximize x + 10 * y.
-    solver.Minimize(1*x1 + 1*x2 + 1*x3 + 1*x4 + 1*x5 + 1*x6 + 1*x7 + 1*x8 + 1*x9 + 1*x10 + 1*x11 + 1*x12)
+            solver.Add(total == piece)
 
-    print(f"Solving with {solver.SolverVersion()}")
+            
+    objective = solver.Objective()
+    for i, var in enumerate(variables[1:]):
+        objective.SetCoefficient(var, 1)
+    objective.SetMinimization()
+
     status = solver.Solve()
 
     if status == pywraplp.Solver.OPTIMAL:
         print("Solution:")
         print("x0 =", solver.Objective().Value())
-        print("x1 =", x1.solution_value())
-        print("x2 =", x2.solution_value())
-        print("x3 =", x3.solution_value())
-        print("x4 =", x4.solution_value())
-        print("x5 =", x5.solution_value())
-        print("x6 =", x6.solution_value())
-        print("x7 =", x7.solution_value())
-        print("x8 =", x8.solution_value())
-        print("x9 =", x9.solution_value())
-        print("x10 =", x10.solution_value())
-        print("x11 =", x11.solution_value())
-        print("x12 =", x12.solution_value())
+        for i, var in enumerate(variables[1:]):
+            print(f"x{i+1} =", var.solution_value())
 
+    else:
+        print("The problem does not have an optimal solution.")
 
+def prog_lineaire_pulp():
+    representation_vectorielle, combinaison_possibles = combinaisons([15], [4,5,10])
+    nombres_pieces = [10,12,6]
+
+    # Create the LP problem
+    problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
+
+    # Define the decision variables
+    n = len(combinaison_possibles)
+    variables = []
+    for i in range(1, n+1):
+        variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
+    
+    print(variables)
+
+    # Define the objective function
+    objective = pulp.LpAffineExpression([(variables[i], 1) for i in range(n)])
+    problem += objective
+    
+    # Define the constraints
+    for i, piece in enumerate(nombres_pieces):
+        for j, var in enumerate(variables[1:]):
+            if j >= len(combinaison_possibles):
+                break
+            coeff = representation_vectorielle[j]
+            total = pulp.LpAffineExpression([(var, c) for c in coeff])
+            problem += total == piece
+    print(problem)
+    # Solve the problem
+    problem.solve()
+
+    # Print the solution
+    if problem.status == pulp.LpStatusOptimal:
+        print("Solution:")
+        print("x0 =", pulp.value(problem.objective))
+        for i, var in enumerate(variables[1:]):
+            print(f"x{i+1} =", pulp.value(var))
 
     else:
         print("The problem does not have an optimal solution.")
 
 if __name__ == "__main__":
-    main()
+    prog_lineaire_pulp()
+    

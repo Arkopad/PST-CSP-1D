@@ -38,8 +38,8 @@ import affichage
 
 # user mode
 LONGUEUR_BOBINE_PERE = [100, 150]
-LISTE_BOBINE_VOULUE = [[102, 103, 104, 101, 33, 100, 100],
-                       [9.3, 11.2, 6.1, 10.4, 5.5, 7.3, 8.9]]
+LISTE_BOBINE_VOULUE = [[102, 103, 104],
+                       [25,50,100]]
 
 TAILLE_LISTE_DECOUPEE = 0
 ITERATION_MINIMISATION_PERTES = 10000
@@ -99,6 +99,7 @@ def combinaisons(liste_pere, liste_fils):
     else:
         tous_patterns = [list(permutation)
                          for permutation in permutations(tous_patterns)]
+    print(tous_patterns)
     return tous_patterns
 
 
