@@ -2,6 +2,7 @@ from ortools.linear_solver import pywraplp
 from itertools import combinations_with_replacement
 from tqdm import tqdm
 import pulp
+import affichage
 
 
 def combinaisons(liste_pere, liste_fils):
@@ -27,9 +28,9 @@ def combinaisons(liste_pere, liste_fils):
 
 
 def prog_lineaire_pulp():
-    representation_vectorielle, combinaison_possibles = combinaisons([15], [
-                                                                     4, 5, 10])
-    nombres_pieces = [10, 12, 6]
+    representation_vectorielle, combinaison_possibles = combinaisons([15, 12], [
+                                                                     4, 5, 10, 12])
+    nombres_pieces = [10, 12, 6, 4]
 
     # Create the LP problem
     problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
@@ -68,6 +69,12 @@ def prog_lineaire_pulp():
 
     else:
         print("The problem does not have an optimal solution.")
+
+    # # affichage graphique (FAIRE LE TODO AVANT)
+    # pattern_affichage = []
+    # for i, var in enumerate(variables):
+    #     if pulp.value(var) != 0:
+    #         pattern_affichage.append()
 
 
 if __name__ == "__main__":

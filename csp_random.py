@@ -23,8 +23,8 @@ ITERATION_MINIMISATION_PERTES = 10000
 # LISTE_BOBINE_VOULUE = [[600, 700, 500], [30, 45, 50]]
 
 # user mode
-LONGUEUR_BOBINE_PERE = [150, 100]
-LISTE_BOBINE_VOULUE = [[600, 700, 500, 400, 200], [30, 45, 50, 75, 100]]
+LONGUEUR_BOBINE_PERE = [100]
+LISTE_BOBINE_VOULUE = [[60, 70, 50], [30, 45, 50]]
 
 affichage_graphique = True
 
@@ -165,6 +165,7 @@ def func_csp_random(longueur_bobine_pere, liste_bobine_voulue, taille_liste_deco
         test[-1].append(count)
         pattern_finaux.append(test)
     if affichage_graphique:
+        print(pattern_finaux, pertes)
         affichage.affichage(pattern_finaux, pertes)
 
     return pattern_finaux, pertes
