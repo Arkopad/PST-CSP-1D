@@ -99,7 +99,6 @@ def combinaisons(liste_pere, liste_fils):
     else:
         tous_patterns = [list(permutation)
                          for permutation in permutations(tous_patterns)]
-    print(tous_patterns)
     return tous_patterns
 
 

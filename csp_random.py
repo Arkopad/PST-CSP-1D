@@ -165,7 +165,6 @@ def func_csp_random(longueur_bobine_pere, liste_bobine_voulue, taille_liste_deco
         test[-1].append(count)
         pattern_finaux.append(test)
     if affichage_graphique:
-        print(pattern_finaux, pertes)
         affichage.affichage(pattern_finaux, pertes)
 
     return pattern_finaux, pertes

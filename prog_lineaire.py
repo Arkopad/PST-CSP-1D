@@ -95,7 +95,6 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         for i in liste_affichage:
             pertes += i[-1][1]*i[-1][2]
             total += i[-1][0]*i[-1][2]
-            print(pertes, total)
         pertes_pourcent = 100 - abs(pertes - total) / total * 100
         affichage.affichage(liste_affichage, pertes_pourcent)
     else:
