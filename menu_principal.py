@@ -5,6 +5,7 @@ from tkinter import messagebox
 # Importation des fonctions
 from csp_pattern_optimaux import main
 from csp_random import func_csp_random
+from prog_lineaire import prog_lineaire_pulp
 
 
 class MenuPrincipal():
@@ -49,11 +50,18 @@ class MenuPrincipal():
         )
         self.titre.pack(pady=4)
 
+        # frame des checkboxes
+        self.frame_checkboxes = tk.Frame(
+            self.racine,
+            bg="#141418",
+        )
+        self.frame_checkboxes.pack(ipady=6, expand=True)
+
         # Checkbox pour la résolution optimale
         self.optimal_resolution = tk.IntVar()
         self.optimal_resolution.set(1)
         self.checkbox = tk.Checkbutton(
-            self.racine,
+            self.frame_checkboxes,
             text="Résolution optimale",
             variable=self.optimal_resolution,
             bg="#010D19",
@@ -68,7 +76,28 @@ class MenuPrincipal():
             pady=5,
             cursor="hand2",
         )
-        self.checkbox.pack(ipady=6, expand=True)
+        self.checkbox.pack(side=tk.LEFT, padx=50)
+
+        # Checkbox pour la résolution linéaire
+        self.linear_resolution = tk.IntVar()
+        self.linear_resolution.set(1)
+        self.checkbox = tk.Checkbutton(
+            self.frame_checkboxes,
+            text="Résolution linéaire",
+            variable=self.linear_resolution,
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 24, "bold"),
+            selectcolor="black",
+            activebackground="white",
+            activeforeground="black",
+            bd=2,
+            relief="sunken",
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        )
+        self.checkbox.pack(side=tk.RIGHT, padx=50)
 
         # Bouton single mode
         self.single = tk.Button(
@@ -119,6 +148,8 @@ class MenuPrincipal():
         """
         if self.optimal_resolution.get():
             main([180, 100], [[800, 500, 100], [30, 45, 50]], 0, 5000)
+        elif self.linear_resolution.get():
+            prog_lineaire_pulp([180, 100], [[800, 500, 100], [30, 45, 50]])
         else:
             func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
                             0, 5000, True)
@@ -129,6 +160,8 @@ class MenuPrincipal():
         """
         if self.optimal_resolution.get():
             main([150, 100], [[600, 700, 500], [30, 45, 50]], 0, 5000)
+        elif self.linear_resolution.get():
+            prog_lineaire_pulp([150, 100], [[600, 700, 500], [30, 45, 50]])
         else:
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
@@ -267,6 +300,10 @@ class MenuPrincipal():
         if self.optimal_resolution.get():
             main(longueur_bobine_pere, [
                  nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
+
+        elif self.linear_resolution.get():  
+            prog_lineaire_pulp(longueur_bobine_pere, [
+                            nombre_bobine_fils, longueur_bobine_fils])
 
         else:
             func_csp_random(longueur_bobine_pere, [

@@ -26,10 +26,11 @@ def combinaisons(liste_pere, liste_fils):
     return representation_vectorielle, combinaison_possibles
 
 
-def prog_lineaire_pulp():
-    representation_vectorielle, combinaison_possibles = combinaisons([15, 12], [
-                                                                     4, 5, 10, 12])
-    nombres_pieces = [10, 12, 6, 4]
+def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
+    nombres_pieces = liste_bobine_voulue[0]
+    taille_pieces = liste_bobine_voulue[1]
+    representation_vectorielle, combinaison_possibles = combinaisons(longueur_bobine_pere, taille_pieces)
+    
 
     # Create the LP problem
     problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
@@ -76,5 +77,6 @@ def prog_lineaire_pulp():
     #         pattern_affichage.append()
 
 
+
 if __name__ == "__main__":
-    prog_lineaire_pulp()
+    prog_lineaire_pulp([15, 12], [[20, 12, 6, 4], [4, 5, 10, 12]])
