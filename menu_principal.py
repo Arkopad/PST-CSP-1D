@@ -161,7 +161,7 @@ class MenuPrincipal():
         if self.optimal_resolution.get():
             main([150, 100], [[600, 700, 500], [30, 45, 50]], 0, 5000)
         elif self.linear_resolution.get():
-            prog_lineaire_pulp([150, 100], [[600, 700, 500], [30, 45, 50]])
+            prog_lineaire_pulp([100, 150], [[600, 700, 500], [30, 45, 50]])
         else:
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
@@ -208,7 +208,7 @@ class MenuPrincipal():
             font=("Helvetica", 13, "bold"),
         )
         self.label_longueur_bobine_pere.pack(pady=(30, 0))
-        
+
         # zone de texte pour les longueurs des bobines pères
         self.longueur_bobine_pere = tk.Entry(
             self.temp_window,
@@ -301,9 +301,9 @@ class MenuPrincipal():
             main(longueur_bobine_pere, [
                  nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
 
-        elif self.linear_resolution.get():  
+        elif self.linear_resolution.get():
             prog_lineaire_pulp(longueur_bobine_pere, [
-                            nombre_bobine_fils, longueur_bobine_fils])
+                nombre_bobine_fils, longueur_bobine_fils])
 
         else:
             func_csp_random(longueur_bobine_pere, [
