@@ -10,7 +10,6 @@ def combinaisons(liste_pere, liste_fils):
     entree : 
         liste_pere : liste des longueurs des bobines pères
         liste_fils : liste des longueurs des bobines fils
-    TODO : PENSER A FAIRE UN FOR POUR TOUTES LES BOBINES PERES    
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
@@ -99,12 +98,6 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         affichage.affichage(liste_affichage, pertes_pourcent)
     else:
         print("The problem does not have an optimal solution.")
-
-    # # affichage graphique (FAIRE LE TODO AVANT)
-    # pattern_affichage = []
-    # for i, var in enumerate(variables):
-    #     if pulp.value(var) != 0:
-    #         pattern_affichage.append()
 
 
 if __name__ == "__main__":
