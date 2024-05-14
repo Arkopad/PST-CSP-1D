@@ -51,22 +51,44 @@ class MenuPrincipal():
         self.titre.pack(pady=4)
 
         # frame des checkboxes
-        self.frame_checkboxes = tk.Frame(
+        self.frame_radiobutton = tk.Frame(
             self.racine,
             bg="#141418",
         )
-        self.frame_checkboxes.pack(ipady=6, expand=True)
+        self.frame_radiobutton.pack(ipady=0, expand=True)
 
-        # Checkbox pour la résolution optimale
-        self.optimal_resolution = tk.IntVar()
-        self.optimal_resolution.set(1)
-        self.checkbox = tk.Checkbutton(
-            self.frame_checkboxes,
+        self.var_resolution = tk.StringVar()
+        self.var_resolution.set("linear")
+
+        # bouton radio pour la résolution aléatoire
+        self.radiobutton = tk.Radiobutton(
+            self.frame_radiobutton,
+            text="Résolution aléatoire",
+            variable=self.var_resolution,
+            value="random",
+            bg="#010D19",
+            fg="#A5A5B5",
+            font=("Helvetica", 15, "bold"),
+            selectcolor="black",
+            activebackground="white",
+            activeforeground="black",
+            bd=2,
+            relief="sunken",
+            padx=5,
+            pady=5,
+            cursor="hand2",
+        )
+        self.radiobutton.pack(side=tk.LEFT, padx=30)
+
+        # bouton radio pour la résolution optimale
+        self.radiobutton = tk.Radiobutton(
+            self.frame_radiobutton,
             text="Résolution optimale",
-            variable=self.optimal_resolution,
+            variable=self.var_resolution,
+            value="optimal",
             bg="#010D19",
             fg="#A5A5B5",
-            font=("Helvetica", 24, "bold"),
+            font=("Helvetica", 15, "bold"),
             selectcolor="black",
             activebackground="white",
             activeforeground="black",
@@ -76,18 +98,17 @@ class MenuPrincipal():
             pady=5,
             cursor="hand2",
         )
-        self.checkbox.pack(side=tk.LEFT, padx=50)
+        self.radiobutton.pack(side=tk.LEFT, padx=30)
 
-        # Checkbox pour la résolution linéaire
-        self.linear_resolution = tk.IntVar()
-        self.linear_resolution.set(1)
-        self.checkbox = tk.Checkbutton(
-            self.frame_checkboxes,
+        # radiobutton pour la résolution linéaire
+        self.radiobutton = tk.Radiobutton(
+            self.frame_radiobutton,
             text="Résolution linéaire",
-            variable=self.linear_resolution,
+            variable=self.var_resolution,
+            value="linear",
             bg="#010D19",
             fg="#A5A5B5",
-            font=("Helvetica", 24, "bold"),
+            font=("Helvetica", 15, "bold"),
             selectcolor="black",
             activebackground="white",
             activeforeground="black",
@@ -97,7 +118,7 @@ class MenuPrincipal():
             pady=5,
             cursor="hand2",
         )
-        self.checkbox.pack(side=tk.RIGHT, padx=50)
+        self.radiobutton.pack(side=tk.RIGHT, padx=30)
 
         # Bouton single mode
         self.single = tk.Button(
@@ -146,11 +167,12 @@ class MenuPrincipal():
         """
         def: 
         """
-        if self.optimal_resolution.get():
+
+        if self.var_resolution.get() == "optimal":
             main([180, 100], [[800, 500, 100], [30, 45, 50]], 0, 5000)
-        elif self.linear_resolution.get():
+        elif self.var_resolution.get() == "linear":
             prog_lineaire_pulp([180, 100], [[800, 500, 100], [30, 45, 50]])
-        else:
+        elif self.var_resolution.get() == "random":
             func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
                             0, 5000, True)
 
@@ -158,11 +180,11 @@ class MenuPrincipal():
         """
         def:
         """
-        if self.optimal_resolution.get():
+        if self.var_resolution.get() == "optimal":
             main([150, 100], [[600, 700, 500], [30, 45, 50]], 0, 5000)
-        elif self.linear_resolution.get():
+        elif self.var_resolution.get() == "linear":
             prog_lineaire_pulp([100, 150], [[600, 700, 500], [30, 45, 50]])
-        else:
+        elif self.var_resolution.get() == "random":
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
 
@@ -297,15 +319,15 @@ class MenuPrincipal():
         nombre_bobine_fils = self.nombre_bobine_fils.get().split(',')
         nombre_bobine_fils = [int(i) for i in nombre_bobine_fils]
 
-        if self.optimal_resolution.get():
+        if self.var_resolution.get() == "optimal":
             main(longueur_bobine_pere, [
                  nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
 
-        elif self.linear_resolution.get():
+        elif self.var_resolution.get() == "linear":
             prog_lineaire_pulp(longueur_bobine_pere, [
                 nombre_bobine_fils, longueur_bobine_fils])
 
-        else:
+        elif self.var_resolution.get() == "random":
             func_csp_random(longueur_bobine_pere, [
                             nombre_bobine_fils, longueur_bobine_fils], 0, 5000, True)
 
