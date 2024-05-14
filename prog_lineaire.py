@@ -67,14 +67,10 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         problem += total == piece
 
     # Solve the problem
-    problem.solve()
+    problem.solve(pulp.PULP_CBC_CMD(msg=False))
 
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
-        print("Solution:")
-        print("x0 =", pulp.value(problem.objective))
-        for i, var in enumerate(variables):
-            print(f"x{i+1} =", pulp.value(var))
 
         liste_affichage = []
         for i, var in enumerate(variables):
