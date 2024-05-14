@@ -13,16 +13,32 @@ def combinaisons(liste_pere, liste_fils):
     TODO : PENSER A FAIRE UN FOR POUR TOUTES LES BOBINES PERES    
     """
     combinaison_possibles = []
-    for r in range(1, len(liste_fils) + 1):
-        combinations = combinations_with_replacement(liste_fils, r)
-        for combination in combinations:
-            if sum(combination) <= liste_pere[0]:
-                combinaison_possibles.append(combination)
+    for i, taille in enumerate(liste_pere):
+        for r in range(1, len(liste_fils) + 1):
+            combinations = combinations_with_replacement(liste_fils, r)
+            for combination in combinations:
+                combinaison_possibles_temp = [] 
+                if sum(combination) <= liste_pere[i]:
+                    combinaison_possibles_temp.append(combination)
+                    combinaison_possibles_temp.append(taille)
+                    combinaison_possibles.append(combinaison_possibles_temp)    
+
+    combinaison_possibles = list(set(tuple(i) for i in combinaison_possibles))
+
 
     representation_vectorielle = []
     for combination in combinaison_possibles:
+        taille_pere = combination[1]	
+        combination = combination[0]
+
+        representation_vectorielle_temp = []
         vector = [combination.count(length) for length in liste_fils]
-        representation_vectorielle.append(vector)
+        representation_vectorielle_temp.append(vector)
+        representation_vectorielle_temp.append(taille_pere)
+        representation_vectorielle.append(representation_vectorielle_temp)
+
+    
+  
     return representation_vectorielle, combinaison_possibles
 
 
@@ -50,7 +66,7 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         total = 0
         for j, var in enumerate(variables):
 
-            coeff = representation_vectorielle[j]
+            coeff = representation_vectorielle[j][0]
 
             total += pulp.LpAffineExpression([(var, coeff[i])])
 
@@ -65,7 +81,17 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         print("x0 =", pulp.value(problem.objective))
         for i, var in enumerate(variables):
             print(f"x{i+1} =", pulp.value(var))
-        print(representation_vectorielle)
+        
+        print('\n',representation_vectorielle)
+
+        liste_affichage = []
+        for i, var in enumerate(variables):
+            liste_temp = []
+            if pulp.value(var) != 0:
+                print(f"{pulp.value(var)}x la representation : {representation_vectorielle[i]}")
+                # creer la liste pour l'affichage de cette forme : [[10, 10, 20, 20, 20 [150, 30.0, 4]], [10, [100, 90, 3]]]
+                
+                
 
     else:
         print("The problem does not have an optimal solution.")
@@ -79,4 +105,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 
 if __name__ == "__main__":
-    prog_lineaire_pulp([15, 12], [[20, 12, 6, 4], [4, 5, 10, 12]])
+    prog_lineaire_pulp([10, 14], [[16,18], [4,6]])

@@ -1,4 +1,3 @@
-from ortools.linear_solver import pywraplp
 from itertools import combinations_with_replacement
 from tqdm import tqdm
 import pulp
@@ -16,9 +15,10 @@ def combinaisons(liste_pere, liste_fils):
     for r in range(1, len(liste_fils) + 1):
         combinations = combinations_with_replacement(liste_fils, r)
         for combination in combinations:
+            print(combination)
             if sum(combination) <= liste_pere[0]:
                 combinaison_possibles.append(combination)
-
+    exit()
     representation_vectorielle = []
     for combination in combinaison_possibles:
         vector = [combination.count(length) for length in liste_fils]
