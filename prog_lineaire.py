@@ -10,6 +10,7 @@ def combinaisons(liste_pere, liste_fils):
     entree : 
         liste_pere : liste des longueurs des bobines pères
         liste_fils : liste des longueurs des bobines fils
+        TODO: ENLEVER TOUT LES DOUBLONS DE PATTERNS
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
@@ -32,6 +33,25 @@ def combinaisons(liste_pere, liste_fils):
         representation_vectorielle_temp.append(vector)
         representation_vectorielle_temp.append(taille_pere)
         representation_vectorielle.append(representation_vectorielle_temp)
+    
+    # On enlève les doublons en gardant uniquement le pattern avec la taille de bobine père la plus petite, les doublons etant les meme listes du premier item de chaque element de la liste representation_vectorielle
+    
+    dict_temp = {}
+    for item in representation_vectorielle:
+        key = str(item[0])
+        if key not in dict_temp or item[1] < dict_temp[key][1]:
+            dict_temp[key] = item
+    liste_sans_doublons = list(dict_temp.values())
+    representation_vectorielle = liste_sans_doublons
+
+    dict_temp = {}
+    for item in combinaison_possibles:
+        key = str(item[0])
+        if key not in dict_temp or item[1] < dict_temp[key][1]:
+            dict_temp[key] = item
+    liste_sans_doublons = list(dict_temp.values())
+    combinaison_possibles = liste_sans_doublons
+
 
     return representation_vectorielle, combinaison_possibles
 
@@ -65,9 +85,11 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
             total += pulp.LpAffineExpression([(var, coeff[i])])
 
         problem += total == piece
+    
 
     # Solve the problem
     problem.solve(pulp.PULP_CBC_CMD(msg=False))
+    print(problem)
 
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
@@ -97,4 +119,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 
 if __name__ == "__main__":
-    prog_lineaire_pulp([15], [[10, 12, 6], [4, 5, 10]])
+    prog_lineaire_pulp([150, 100], [[600, 700, 500], [30, 45, 50]])
