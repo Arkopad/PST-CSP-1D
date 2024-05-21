@@ -88,8 +88,7 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
     
 
     # Solve the problem
-    problem.solve(pulp.PULP_CBC_CMD(msg=False))
-    print(problem)
+    problem.solve(pulp.GUROBI_CMD(msg=0))
 
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
