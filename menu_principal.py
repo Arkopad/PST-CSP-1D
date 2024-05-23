@@ -171,7 +171,7 @@ class MenuPrincipal():
         if self.var_resolution.get() == "optimal":
             main([180, 100], [[800, 500, 100], [30, 45, 50]], 0, 5000)
         elif self.var_resolution.get() == "linear":
-            prog_lineaire_pulp([180, 100], [[800, 500, 100], [30, 45, 50]])
+            prog_lineaire_pulp([180, 100], [[800, 500, 100], [30, 45, 50]], 2)
         elif self.var_resolution.get() == "random":
             func_csp_random([180, 100], [[800, 500, 100], [30, 45, 50]],
                             0, 5000, True)
@@ -183,7 +183,7 @@ class MenuPrincipal():
         if self.var_resolution.get() == "optimal":
             main([150, 100], [[600, 700, 500], [30, 45, 50]], 0, 5000)
         elif self.var_resolution.get() == "linear":
-            prog_lineaire_pulp([100, 150], [[600, 700, 500], [30, 45, 50]])
+            prog_lineaire_pulp([100, 150], [[600, 700, 500], [30, 45, 50]], 2)
         elif self.var_resolution.get() == "random":
             func_csp_random([150, 100], [[600, 700, 500], [30, 45, 50]],
                             0, 5000, True)
@@ -349,8 +349,9 @@ class MenuPrincipal():
                  nombre_bobine_fils, longueur_bobine_fils], 0, 5000)
 
         elif self.var_resolution.get() == "linear":
+            exposant = float(self.coeff.get())
             prog_lineaire_pulp(longueur_bobine_pere, [
-                nombre_bobine_fils, longueur_bobine_fils])
+                nombre_bobine_fils, longueur_bobine_fils], exposant)
 
         elif self.var_resolution.get() == "random":
             func_csp_random(longueur_bobine_pere, [

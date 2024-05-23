@@ -63,7 +63,7 @@ def combinaisons(liste_pere, liste_fils):
     return representation_vectorielle, combinaison_possibles
 
 
-def coefficient_importance_pattern(combinaison_possibles):
+def coefficient_importance_pattern(combinaison_possibles, exposant):
     """
     Fonction qui retourne les coefficients d'importance de chaque pattern
     entree :
@@ -77,13 +77,13 @@ def coefficient_importance_pattern(combinaison_possibles):
         perte = pattern[1] - sum(pattern[0])
 
         # VALEUR A CHANGER POUR OPTIMISER
-        coefficient = int(perte**2) + 0.0001
+        coefficient = int(perte**exposant) + 0.0001
         coefficients.append(coefficient)
 
     return coefficients
 
 
-def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
+def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue, exposant):
     nombres_pieces = liste_bobine_voulue[0]
     taille_pieces = liste_bobine_voulue[1]
     representation_vectorielle, combinaison_possibles = combinaisons(
@@ -99,7 +99,8 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         variables.append(pulp.LpVariable(
             f"x{i}", lowBound=0, cat='Integer'))
 
-    coefficient = coefficient_importance_pattern(combinaison_possibles)
+    coefficient = coefficient_importance_pattern(
+        combinaison_possibles, exposant)
     objective = pulp.LpAffineExpression(
         [(variables[i], coefficient[i]) for i in range(n)])
     problem += objective
@@ -148,4 +149,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 180], [[800, 500, 100], [30, 45, 50]])
+        [100, 180], [[800, 500, 100], [30, 45, 50]], 2)
