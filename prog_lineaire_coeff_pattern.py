@@ -52,7 +52,35 @@ def combinaisons(liste_pere, liste_fils):
     liste_sans_doublons = list(dict_temp.values())
     combinaison_possibles = liste_sans_doublons
 
+    # on enleve les patterns qui ne sont pas optimaux
+    dict_temp = {}
+    for item in combinaison_possibles:
+        key = str(item[0])
+        if key not in dict_temp or item[1] < dict_temp[key][1]:
+            dict_temp[key] = item
+    liste_sans_doublons = list(dict_temp.values())
+    combinaison_possibles = liste_sans_doublons
+
     return representation_vectorielle, combinaison_possibles
+
+
+def coefficient_importance_pattern(combinaison_possibles):
+    """
+    Fonction qui retourne les coefficients d'importance de chaque pattern
+    entree :
+        combinaison_possibles : liste des patterns
+    sortie :
+        coefficients : liste des coefficients d'importance de chaque pattern
+    """
+    coefficients = []
+    for pattern in combinaison_possibles:
+
+        perte = pattern[1] - sum(pattern[0])
+
+        coefficient = int(perte**10) + 0.1  # VALEUR A CHANGER POUR OPTIMISER
+        coefficients.append(coefficient)
+
+    return coefficients
 
 
 def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
@@ -70,9 +98,9 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
     for i in range(1, n+1):
         variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
 
-    # Define the objective function
+    coefficient = coefficient_importance_pattern(combinaison_possibles)
     objective = pulp.LpAffineExpression(
-        [(variables[i], 1) for i in range(n)])
+        [(variables[i], coefficient[i]) for i in range(n)])
     problem += objective
 
     # Define the constraints
@@ -87,8 +115,8 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
         problem += total == piece
 
     # Solve the problem
-    problem.solve(pulp.PULP_CBC_CMD(msg=0))
 
+    problem.solve(pulp.PULP_CBC_CMD(msg=0))
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
 
@@ -118,4 +146,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 150], [[600, 900, 300, 400, 200, 100, 1050, 140, 12], [30, 45, 50, 60, 70, 80, 90, 100, 55]])
+        [100, 150, 130], [[600, 900, 300, 400, 200, 100, 1050, 140, 12], [30, 45, 50, 60, 70, 80, 90, 100, 55]])
