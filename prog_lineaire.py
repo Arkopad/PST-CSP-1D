@@ -118,4 +118,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 150, 180], [[1400, 1200, 600], [30, 45, 50]])
+        [100, 150], [[600, 700, 500], [30, 45, 50]])

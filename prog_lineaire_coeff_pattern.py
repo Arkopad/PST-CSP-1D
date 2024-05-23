@@ -79,7 +79,7 @@ def coefficient_importance_pattern(combinaison_possibles):
         perte = pattern[1] - sum(pattern[0])
         print(perte)
         # VALEUR A CHANGER POUR OPTIMISER
-        coefficient = int(perte**1.) + 0.0001
+        coefficient = int(perte**0) + 0.0001
         coefficients.append(coefficient)
 
     return coefficients
