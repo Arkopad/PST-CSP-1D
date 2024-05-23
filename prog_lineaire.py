@@ -14,7 +14,7 @@ def combinaisons(liste_pere, liste_fils):
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
-        for r in range(1, len(liste_fils) + 1):
+        for r in range(1, 12):
             combinations = combinations_with_replacement(liste_fils, r)
             for combination in combinations:
                 combinaison_possibles_temp = []
@@ -118,4 +118,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 150], [[600, 900, 300, 400, 200, 100, 1050, 140, 12], [30, 45, 50, 60, 70, 80, 90, 100, 55]])
+        [100, 150, 180], [[1400, 1200, 600], [30, 45, 50]])

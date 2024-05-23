@@ -14,7 +14,7 @@ def combinaisons(liste_pere, liste_fils):
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
-        for r in range(1, len(liste_fils) + 1):
+        for r in range(1, 12):
             combinations = combinations_with_replacement(liste_fils, r)
             for combination in combinations:
                 combinaison_possibles_temp = []
@@ -22,7 +22,7 @@ def combinaisons(liste_pere, liste_fils):
                     combinaison_possibles_temp.append(combination)
                     combinaison_possibles_temp.append(taille)
                     combinaison_possibles.append(combinaison_possibles_temp)
-
+    print(combinaison_possibles, '\n')
     representation_vectorielle = []
     for combination in combinaison_possibles:
         taille_pere = combination[1]
@@ -60,6 +60,7 @@ def combinaisons(liste_pere, liste_fils):
             dict_temp[key] = item
     liste_sans_doublons = list(dict_temp.values())
     combinaison_possibles = liste_sans_doublons
+    print(combinaison_possibles)
 
     return representation_vectorielle, combinaison_possibles
 
@@ -76,8 +77,9 @@ def coefficient_importance_pattern(combinaison_possibles):
     for pattern in combinaison_possibles:
 
         perte = pattern[1] - sum(pattern[0])
-
-        coefficient = int(perte**10) + 0.1  # VALEUR A CHANGER POUR OPTIMISER
+        print(perte)
+        # VALEUR A CHANGER POUR OPTIMISER
+        coefficient = int(perte**1.) + 0.0001
         coefficients.append(coefficient)
 
     return coefficients
@@ -96,7 +98,8 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
     n = len(combinaison_possibles)
     variables = []
     for i in range(1, n+1):
-        variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
+        variables.append(pulp.LpVariable(
+            f"x{i}", lowBound=0, cat='Integer'))
 
     coefficient = coefficient_importance_pattern(combinaison_possibles)
     objective = pulp.LpAffineExpression(
@@ -114,9 +117,12 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
         problem += total == piece
 
+    print(problem)
+
     # Solve the problem
 
     problem.solve(pulp.PULP_CBC_CMD(msg=0))
+
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
 
@@ -146,4 +152,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 150, 130], [[600, 900, 300, 400, 200, 100, 1050, 140, 12], [30, 45, 50, 60, 70, 80, 90, 100, 55]])
+        [100, 150], [[600, 700, 500], [30, 45, 50]])
