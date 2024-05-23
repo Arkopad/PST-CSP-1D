@@ -5,7 +5,7 @@ from tkinter import messagebox
 # Importation des fonctions
 from csp_pattern_optimaux import main
 from csp_random import func_csp_random
-from prog_lineaire import prog_lineaire_pulp
+from prog_lineaire_coeff_pattern import prog_lineaire_pulp
 
 
 class MenuPrincipal():
@@ -229,7 +229,7 @@ class MenuPrincipal():
             fg="#A5A5B5",
             font=("Helvetica", 13, "bold"),
         )
-        self.label_longueur_bobine_pere.pack(pady=(30, 0))
+        self.label_longueur_bobine_pere.pack(pady=(10, 0))
 
         # zone de texte pour les longueurs des bobines pères
         self.longueur_bobine_pere = tk.Entry(
@@ -242,8 +242,8 @@ class MenuPrincipal():
             insertbackground='white',
         )
         self.longueur_bobine_pere.insert(
-            0, '150, 100, 70')
-        self.longueur_bobine_pere.pack(ipady=6, pady=(0, 50))
+            0, '150, 100, 180')
+        self.longueur_bobine_pere.pack(ipady=6, pady=(0, 30))
 
         # texte pour les longueurs des bobines fils
         self.label_longueur_bobine_fils = tk.Label(
@@ -266,9 +266,9 @@ class MenuPrincipal():
             insertbackground='white',
         )
         self.longueur_bobine_fils.insert(
-            0, '40, 50, 60, 80')
+            0, '30, 45, 50')
 
-        self.longueur_bobine_fils.pack(ipady=6, pady=(0, 50))
+        self.longueur_bobine_fils.pack(ipady=6, pady=(0, 30))
 
         # texte pour le nombre des bobines fils
         self.label_nombre_bobine_fils = tk.Label(
@@ -291,8 +291,33 @@ class MenuPrincipal():
             insertbackground='white',
         )
         self.nombre_bobine_fils.insert(
-            0, '100, 500, 500, 300')
-        self.nombre_bobine_fils.pack(ipady=6)
+            0, '1400, 1200, 600')
+        self.nombre_bobine_fils.pack(ipady=6, pady=(0, 30))
+
+        if self.var_resolution.get() == "linear":
+            # texte pour l'exposant des coefficients de contraintes'
+            self.label_coeff = tk.Label(
+                self.temp_window,
+                text="Exposant des coefficients de contraintes :",
+                bg="#141418",
+                fg="#A5A5B5",
+                font=("Helvetica", 13, "bold"),
+            )
+            self.label_coeff.pack()
+
+            # zone de texte pour le coeff
+            self.coeff = tk.Entry(
+                self.temp_window,
+                bg="#010D19",
+                fg="#A5A5B5",
+                font=("Helvetica", 15, "bold"),
+                width=30,
+                justify='center',
+                insertbackground='white',
+            )
+            self.coeff.insert(
+                0, '2')
+            self.coeff.pack(ipady=6, pady=(0, 30))
 
         # Create a button in the temporary window
         self.validate_button = tk.Button(

@@ -14,7 +14,7 @@ def combinaisons(liste_pere, liste_fils):
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
-        for r in range(1, 12):
+        for r in range(1, 20):
             combinations = combinations_with_replacement(liste_fils, r)
             for combination in combinations:
                 combinaison_possibles_temp = []

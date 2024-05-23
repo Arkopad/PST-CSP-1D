@@ -10,7 +10,6 @@ def combinaisons(liste_pere, liste_fils):
     entree : 
         liste_pere : liste des longueurs des bobines pères
         liste_fils : liste des longueurs des bobines fils
-        TODO: ENLEVER TOUT LES DOUBLONS DE PATTERNS
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
@@ -22,7 +21,7 @@ def combinaisons(liste_pere, liste_fils):
                     combinaison_possibles_temp.append(combination)
                     combinaison_possibles_temp.append(taille)
                     combinaison_possibles.append(combinaison_possibles_temp)
-    print(combinaison_possibles, '\n')
+
     representation_vectorielle = []
     for combination in combinaison_possibles:
         taille_pere = combination[1]
@@ -60,7 +59,6 @@ def combinaisons(liste_pere, liste_fils):
             dict_temp[key] = item
     liste_sans_doublons = list(dict_temp.values())
     combinaison_possibles = liste_sans_doublons
-    print(combinaison_possibles)
 
     return representation_vectorielle, combinaison_possibles
 
@@ -77,9 +75,9 @@ def coefficient_importance_pattern(combinaison_possibles):
     for pattern in combinaison_possibles:
 
         perte = pattern[1] - sum(pattern[0])
-        print(perte)
+
         # VALEUR A CHANGER POUR OPTIMISER
-        coefficient = int(perte**0) + 0.0001
+        coefficient = int(perte**2) + 0.0001
         coefficients.append(coefficient)
 
     return coefficients
@@ -117,8 +115,6 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
         problem += total == piece
 
-    print(problem)
-
     # Solve the problem
 
     problem.solve(pulp.PULP_CBC_CMD(msg=0))
@@ -152,4 +148,4 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
 if __name__ == "__main__":
     prog_lineaire_pulp(
-        [100, 150], [[600, 700, 500], [30, 45, 50]])
+        [100, 180], [[800, 500, 100], [30, 45, 50]])
