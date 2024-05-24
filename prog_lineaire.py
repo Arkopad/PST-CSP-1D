@@ -112,21 +112,25 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
             pertes += i[-1][1]*i[-1][2]
             total += i[-1][0]*i[-1][2]
         pertes_pourcent = 100 - abs(pertes - total) / total * 100
-        #affichage.affichage(liste_affichage, pertes_pourcent)
-        
+        # affichage.affichage(liste_affichage, pertes_pourcent)
+
         return pertes_pourcent
-        
+
     else:
         return None
 
 
+# if __name__ == "__main__":
+#     prog_lineaire_pulp(
+#         [70, 110], [[420, 420], [70, 70]])
+#     exit()
 
 
 if __name__ == "__main__":
-    REPETITIONS = 500
-    TAILLE_LISTE_PERE = 2
-    TAILLE_LISTE_FILS = 4
-    
+    REPETITIONS = 10000
+    TAILLE_LISTE_PERE = 5
+    TAILLE_LISTE_FILS = 5
+
     PERTES = []
     for k in tqdm(range(REPETITIONS)):
         liste_pere = []
@@ -134,14 +138,17 @@ if __name__ == "__main__":
         taille_bobine_fils = []
 
         for i in range(TAILLE_LISTE_PERE):
-            nombre_bobine_fils.append(10*random.randint(10, 50)) # ENTRE 100 ET 500
-            taille_bobine_fils.append(10*random.randint(1, 9))  # ENTRE 10 ET 90
-        
+            nombre_bobine_fils.append(
+                10*random.randint(10, 50))  # ENTRE 100 ET 500
+            taille_bobine_fils.append(
+                10*random.randint(1, 9))  # ENTRE 10 ET 90
+
         for j in range(TAILLE_LISTE_PERE):
-            liste_pere.append(round(random.randint(max(taille_bobine_fils)/10, 5*max(taille_bobine_fils)/10))*10) # ENTRE (10-90) ET (50-450)
-   
+            liste_pere.append(round(random.randint(max(
+                taille_bobine_fils)/10, 5*max(taille_bobine_fils)/10))*10)  # ENTRE (10-90) ET (50-450)
+
         perte = prog_lineaire_pulp(
-            liste_pere, [nombre_bobine_fils, taille_bobine_fils])
+            liste_pere, [nombre_bobine_fils, taille_bobine_fils]) if len(taille_bobine_fils) == len(set(taille_bobine_fils)) else None
         if perte != None:
             PERTES.append(perte)
             if perte < 0:
@@ -149,9 +156,10 @@ if __name__ == "__main__":
                 print([nombre_bobine_fils, taille_bobine_fils])
                 print(perte)
 
-    print(f' Perte moyenne : {sum(PERTES)/ len(PERTES):.2f} %')
-    print(f' Perte max : {max(PERTES):.2f} %')
-    print(f' Perte min : {min(PERTES):.2f} %')
-
-[70, 110]
-[[420, 420], [70, 70]] # A TESTER
+    if PERTES != []:
+        print(f' Nombre de solutions : {len(PERTES)}')
+        print(f' Perte moyenne : {sum(PERTES)/ len(PERTES):.2f} %')
+        print(f' Perte max : {max(PERTES):.2f} %')
+        print(f' Perte min : {min(PERTES):.2f} %')
+    else:
+        print('Pas de solution')
