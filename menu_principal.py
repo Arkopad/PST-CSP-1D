@@ -5,7 +5,7 @@ from tkinter import messagebox
 # Importation des fonctions
 from csp_pattern_optimaux import main
 from csp_random import func_csp_random
-from prog_lineaire_coeff_pattern import prog_lineaire_pulp
+from prog_lineaire_coeff import prog_lineaire_pulp
 
 
 class MenuPrincipal():

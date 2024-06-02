@@ -2,6 +2,8 @@ from itertools import combinations_with_replacement
 from tqdm import tqdm
 import pulp
 import affichage
+import random
+import statistics as statitics
 
 
 def combinaisons(liste_pere, liste_fils):
@@ -10,11 +12,10 @@ def combinaisons(liste_pere, liste_fils):
     entree : 
         liste_pere : liste des longueurs des bobines pères
         liste_fils : liste des longueurs des bobines fils
-        TODO: ENLEVER TOUT LES DOUBLONS DE PATTERNS
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
-        for r in range(1, 12):
+        for r in range(1, 40):
             combinations = combinations_with_replacement(liste_fils, r)
             for combination in combinations:
                 combinaison_possibles_temp = []
@@ -64,7 +65,7 @@ def combinaisons(liste_pere, liste_fils):
     return representation_vectorielle, combinaison_possibles
 
 
-def coefficient_importance_pattern(combinaison_possibles):
+def coefficient_importance_pattern(combinaison_possibles, exposant):
     """
     Fonction qui retourne les coefficients d'importance de chaque pattern
     entree :
@@ -77,18 +78,18 @@ def coefficient_importance_pattern(combinaison_possibles):
 
         perte = pattern[1] - sum(pattern[0])
 
-        coefficient = int(perte**10) + 0.1  # VALEUR A CHANGER POUR OPTIMISER
+        # VALEUR A CHANGER POUR OPTIMISER
+        coefficient = int(perte**exposant) + 0.0001
         coefficients.append(coefficient)
 
     return coefficients
 
 
-def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
+def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue, exposant):
     nombres_pieces = liste_bobine_voulue[0]
     taille_pieces = liste_bobine_voulue[1]
     representation_vectorielle, combinaison_possibles = combinaisons(
         longueur_bobine_pere, taille_pieces)
-
     # Create the LP problem
     problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
 
@@ -96,9 +97,11 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
     n = len(combinaison_possibles)
     variables = []
     for i in range(1, n+1):
-        variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
+        variables.append(pulp.LpVariable(
+            f"x{i}", lowBound=0, cat='Integer'))
 
-    coefficient = coefficient_importance_pattern(combinaison_possibles)
+    coefficient = coefficient_importance_pattern(
+        combinaison_possibles, exposant)
     objective = pulp.LpAffineExpression(
         [(variables[i], coefficient[i]) for i in range(n)])
     problem += objective
@@ -116,8 +119,8 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
 
     # Solve the problem
 
-    # PULP_CBC_CMD GUROBI_CMD
-    problem.solve(pulp.PULP_CBC_CMD(msg=0))
+    problem.solve(pulp.PULP_CBC_CMD(timeLimit=1, msg=0))
+
     # Print the solution
     if problem.status == pulp.LpStatusOptimal:
 
@@ -140,11 +143,57 @@ def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
             pertes += i[-1][1]*i[-1][2]
             total += i[-1][0]*i[-1][2]
         pertes_pourcent = 100 - abs(pertes - total) / total * 100
-        affichage.affichage(liste_affichage, pertes_pourcent)
+        # affichage.affichage(liste_affichage, pertes_pourcent)
+        # print(f'{problem.solutionTime:.2f} s')
+        return pertes_pourcent, problem.solutionTime
+
     else:
         print("The problem does not have an optimal solution.")
+        return None
 
+
+# if __name__ == "__main__":
+#     prog_lineaire_pulp([380, 170, 100, 440], [[170, 250, 370, 330, 310], [
+#                        70, 10, 80, 50, 20]], 2)
+#     exit()
 
 if __name__ == "__main__":
-    prog_lineaire_pulp(
-        [100, 150], [[600, 700, 500], [30, 45, 50]])
+    REPETITIONS = 1000
+    TAILLE_LISTE_PERE = 3
+    TAILLE_LISTE_FILS = 5
+
+    PERTES = []
+    TEMPS = []
+    for k in tqdm(range(REPETITIONS)):
+        liste_pere = []
+        nombre_bobine_fils = []
+        taille_bobine_fils = []
+
+        for i in range(random.randint(2, TAILLE_LISTE_FILS)):
+            nombre_bobine_fils.append(
+                10*random.randint(10, 50))  # ENTRE 100 ET 500
+            taille_bobine_fils.append(
+                10*random.randint(1, 9))  # ENTRE 10 ET 90
+
+        for j in range(random.randint(1, TAILLE_LISTE_PERE)):
+            liste_pere.append(round(random.randint(max(
+                taille_bobine_fils)/10, 3*max(taille_bobine_fils)/10))*10)  # ENTRE (10-90) ET (50-450)
+        liste_pere = list(set(liste_pere))
+        if len(taille_bobine_fils) != len(set(taille_bobine_fils)):
+            taille_bobine_fils = list(set(taille_bobine_fils))
+            nombre_bobine_fils = [nombre_bobine_fils[taille_bobine_fils.index(
+                taille)] for taille in taille_bobine_fils]
+
+        perte, temps_calcul = prog_lineaire_pulp(
+            liste_pere, [nombre_bobine_fils, taille_bobine_fils], 2)
+        TEMPS.append(temps_calcul)
+        if perte != None:
+            PERTES.append(perte)
+
+    if PERTES != []:
+        print(f' Nombre de solutions : {len(PERTES)}')
+        print(f' Perte moyenne : {sum(PERTES)/ len(PERTES):.2f} %')
+        print(f' Perte médiane : {statitics.median(PERTES):.2f} %')
+        print(f' Temps moyen : {sum(TEMPS)/ len(TEMPS):.2f} s')
+    else:
+        print('Pas de solution')

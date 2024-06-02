@@ -1,8 +1,9 @@
 from itertools import combinations_with_replacement
 from tqdm import tqdm
-import pulp
+from ortools.linear_solver import pywraplp
 import affichage
 import random
+import statistics as statitics
 
 
 def combinaisons(liste_pere, liste_fils):
@@ -15,7 +16,7 @@ def combinaisons(liste_pere, liste_fils):
     """
     combinaison_possibles = []
     for i, taille in enumerate(liste_pere):
-        for r in range(1, 20):
+        for r in range(1, 40):
             combinations = combinations_with_replacement(liste_fils, r)
             for combination in combinations:
                 combinaison_possibles_temp = []
@@ -56,110 +57,101 @@ def combinaisons(liste_pere, liste_fils):
     return representation_vectorielle, combinaison_possibles
 
 
-def prog_lineaire_pulp(longueur_bobine_pere, liste_bobine_voulue):
+def prog_lineaire_or_tools(longueur_bobine_pere, liste_bobine_voulue):
     nombres_pieces = liste_bobine_voulue[0]
     taille_pieces = liste_bobine_voulue[1]
     representation_vectorielle, combinaison_possibles = combinaisons(
         longueur_bobine_pere, taille_pieces)
 
-    # Create the LP problem
-    problem = pulp.LpProblem("Linear_Programming_Problem", pulp.LpMinimize)
+    # Create the solver
+    # GLOP, CBC, CLP, SCIP, CP-SAT, SAT
+    solver = pywraplp.Solver.CreateSolver('GLOP')
 
     # Define the decision variables
     n = len(combinaison_possibles)
     variables = []
     for i in range(1, n+1):
-        variables.append(pulp.LpVariable(f"x{i}", lowBound=0, cat='Integer'))
+        variables.append(solver.IntVar(0, solver.infinity(), f'x{i}'))
 
     # Define the objective function
-    objective = pulp.LpAffineExpression(
-        [(variables[i], 1) for i in range(n)])
-    problem += objective
+    objective = solver.Objective()
+    for i in range(n):
+        objective.SetCoefficient(variables[i], 1)
+    objective.SetMinimization()
 
     # Define the constraints
     for i, piece in enumerate(nombres_pieces):
-        total = 0
-        for j, var in enumerate(variables):
+        total = solver.Sum(
+            variables[j] * representation_vectorielle[j][0][i] for j in range(n))
 
-            coeff = representation_vectorielle[j][0]
-
-            total += pulp.LpAffineExpression([(var, coeff[i])])
-
-        problem += total == piece
+        solver.Add(total == piece)
 
     # Solve the problem
-    problem.solve(pulp.PULP_CBC_CMD(msg=0))
+    solver.Solve()
 
     # Print the solution
-    if problem.status == pulp.LpStatusOptimal:
 
-        liste_affichage = []
-        for i, var in enumerate(variables):
-            liste_temp = []
-            if pulp.value(var) != 0:
-                for j, nbr in enumerate(representation_vectorielle[i][0]):
-                    for k in range(nbr):
-                        liste_temp.append(liste_bobine_voulue[1][j])
+    liste_affichage = []
+    for i, var in enumerate(variables):
+        liste_temp = []
+        if var.solution_value() != 0:
+            for j, nbr in enumerate(representation_vectorielle[i][0]):
+                for k in range(nbr):
+                    liste_temp.append(liste_bobine_voulue[1][j])
 
-                perte = representation_vectorielle[i][1] - sum(liste_temp)
-                liste_temp.append(
-                    [representation_vectorielle[i][1], perte, int(pulp.value(var))])
-                liste_affichage.append(liste_temp)
+            perte = representation_vectorielle[i][1] - sum(liste_temp)
+            liste_temp.append(
+                [representation_vectorielle[i][1], perte, int(var.solution_value())])
+            liste_affichage.append(liste_temp)
 
-        pertes = 0
-        total = 0
-        for i in liste_affichage:
-            pertes += i[-1][1]*i[-1][2]
-            total += i[-1][0]*i[-1][2]
-        pertes_pourcent = 100 - abs(pertes - total) / total * 100
-        # affichage.affichage(liste_affichage, pertes_pourcent)
+    pertes = 0
+    total = 0
+    for i in liste_affichage:
+        pertes += i[-1][1]*i[-1][2]
+        total += i[-1][0]*i[-1][2]
+    pertes_pourcent = 100 - abs(pertes - total) / total * 100
+    # affichage.affichage(liste_affichage, pertes_pourcent)
 
-        return pertes_pourcent
-
-    else:
-        return None
-
-
-# if __name__ == "__main__":
-#     prog_lineaire_pulp(
-#         [70, 110], [[420, 420], [70, 70]])
-#     exit()
+    return pertes_pourcent, solver.wall_time() / 1000
 
 
 if __name__ == "__main__":
-    REPETITIONS = 10000
-    TAILLE_LISTE_PERE = 5
+    REPETITIONS = 1000
+    TAILLE_LISTE_PERE = 3
     TAILLE_LISTE_FILS = 5
 
     PERTES = []
+    TEMPS = []
     for k in tqdm(range(REPETITIONS)):
         liste_pere = []
         nombre_bobine_fils = []
         taille_bobine_fils = []
 
-        for i in range(TAILLE_LISTE_PERE):
+        for i in range(random.randint(2, TAILLE_LISTE_FILS)):
             nombre_bobine_fils.append(
                 10*random.randint(10, 50))  # ENTRE 100 ET 500
             taille_bobine_fils.append(
                 10*random.randint(1, 9))  # ENTRE 10 ET 90
 
-        for j in range(TAILLE_LISTE_PERE):
+        for j in range(random.randint(1, TAILLE_LISTE_PERE)):
             liste_pere.append(round(random.randint(max(
-                taille_bobine_fils)/10, 5*max(taille_bobine_fils)/10))*10)  # ENTRE (10-90) ET (50-450)
+                taille_bobine_fils)/10, 3*max(taille_bobine_fils)/10))*10)  # ENTRE (10-90) ET (50-450)
+        liste_pere = list(set(liste_pere))
+        if len(taille_bobine_fils) != len(set(taille_bobine_fils)):
+            taille_bobine_fils = list(set(taille_bobine_fils))
+            nombre_bobine_fils = [nombre_bobine_fils[taille_bobine_fils.index(
+                taille)] for taille in taille_bobine_fils]
 
-        perte = prog_lineaire_pulp(
-            liste_pere, [nombre_bobine_fils, taille_bobine_fils]) if len(taille_bobine_fils) == len(set(taille_bobine_fils)) else None
+        perte, temps_calcul = prog_lineaire_or_tools(
+            liste_pere, [nombre_bobine_fils, taille_bobine_fils])
+        TEMPS.append(temps_calcul)
         if perte != None:
             PERTES.append(perte)
-            if perte < 0:
-                print(liste_pere)
-                print([nombre_bobine_fils, taille_bobine_fils])
-                print(perte)
 
     if PERTES != []:
         print(f' Nombre de solutions : {len(PERTES)}')
         print(f' Perte moyenne : {sum(PERTES)/ len(PERTES):.2f} %')
-        print(f' Perte max : {max(PERTES):.2f} %')
-        print(f' Perte min : {min(PERTES):.2f} %')
+        print(f' Perte médiane : {statitics.median(PERTES):.2f} %')
+        print(f' Temps moyen : {sum(TEMPS)/ len(TEMPS):.6f} s')
     else:
         print('Pas de solution')
